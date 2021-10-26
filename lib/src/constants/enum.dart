@@ -1,0 +1,1 @@
+enum CategoryEnum { Loaded }
