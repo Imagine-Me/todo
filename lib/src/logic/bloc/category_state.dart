@@ -11,4 +11,5 @@ part of 'category_bloc.dart';
 class CategoryState {
   CategoryState({this.categories = const []});
   List<Category> categories;
+  List<Category> get categoriesOrdered => categories.reversed.toList();
 }
