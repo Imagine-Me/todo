@@ -1,5 +1,7 @@
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category_bloc.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_main.dart';
 import 'package:todo/src/presentation/widgets/category_form.dart';
@@ -22,7 +24,7 @@ class CategoryScreen extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return CategoryForm();
+        return const CategoryForm();
       },
     );
   }
@@ -39,17 +41,34 @@ class CategoryScreen extends StatelessWidget {
             style: TextStyle(fontSize: 32),
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           Expanded(
             child: BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, state) {
                 return ListView.builder(
-                    itemCount: state.categoriesOrdered.length,
+                    itemCount: state.categories.length,
                     itemBuilder: (context, index) {
-                      return CardMain(
-                        color: int.parse(state.categoriesOrdered[index].color),
-                        category: state.categoriesOrdered[index].category,
+                      final item = state.categories[index];
+                      return Dismissible(
+                        direction: DismissDirection.endToStart,
+                        background: Container(color: Colors.redAccent),
+                        key: Key(item.toString()),
+                        child: CardMain(
+                          color: int.parse(item.color),
+                          category: item.category,
+                        ),
+                        onDismissed: (_) {
+                          BlocProvider.of<CategoryBloc>(context).add(
+                            DeleteCategory(
+                              category: CategoriesCompanion(
+                                id: drift.Value(item.id),
+                                category: drift.Value(item.category),
+                                color: drift.Value(item.color),
+                              ),
+                            ),
+                          );
+                        },
                       );
                     });
               },

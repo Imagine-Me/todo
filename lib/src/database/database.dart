@@ -37,12 +37,19 @@ class TodoTable extends _$TodoTable {
 
   //! CATEGORY TABLE
   Stream<List<Category>> watchCategories() {
-    return select(categories).watch();
+    return (select(categories)
+          ..orderBy(
+              [(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)]))
+        .watch();
   }
 
   Future<int> addCategory(CategoriesCompanion entity) {
     return into(categories).insert(entity);
   }
+
+  Future deleteCategory(CategoriesCompanion entity) {
+    return (delete(categories)..delete(entity)).go();
+  }
 }
 
-final database = TodoTable(); 
+final database = TodoTable();
