@@ -5,7 +5,15 @@ import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category_bloc.dart';
 
 class CategoryForm extends StatefulWidget {
-  const CategoryForm({Key? key}) : super(key: key);
+  CategoryForm({Key? key, this.categoriesCompanion}) : super(key: key) {
+    categoryTextController = TextEditingController(
+        text: categoriesCompanion == null
+            ? ''
+            : categoriesCompanion!.category.value);
+  }
+
+  final CategoriesCompanion? categoriesCompanion;
+  late final TextEditingController categoryTextController;
 
   @override
   State<CategoryForm> createState() => _CategoryFormState();
@@ -22,18 +30,26 @@ class _CategoryFormState extends State<CategoryForm> {
     0xffa545d1,
     0xffd149a8,
     0xffc4314c,
+    0xffff4554,
+    0xff85fffb,
+    0xff6a1ce8
   ];
   final _formKey = GlobalKey<FormState>();
-  final categoryTextController = TextEditingController();
-
-  int selectedColor = 0xfffcba03;
+  late int selectedColor;
+  @override
+  void initState() {
+    super.initState();
+    selectedColor = widget.categoriesCompanion == null
+        ? 0xfffcba03
+        : int.parse(widget.categoriesCompanion!.color.value);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
-      child: Container(
-        height: 220,
+      child: SizedBox(
+        height: 270,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Form(
@@ -41,14 +57,16 @@ class _CategoryFormState extends State<CategoryForm> {
               child: Column(
                 children: [
                   TextFormField(
-                    controller: categoryTextController,
+                    controller: widget.categoryTextController,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Enter Category',
                     ),
                     validator: (String? value) {
-                      if (value == null) return 'Enter a category';
+                      if (value == null || value == '') {
+                        return 'Enter a category';
+                      }
                       return null;
                     },
                   ),
@@ -68,7 +86,8 @@ class _CategoryFormState extends State<CategoryForm> {
                             child: Container(
                               width: 30,
                               height: 30,
-                              margin: const EdgeInsets.only(right: 10),
+                              margin:
+                                  const EdgeInsets.only(right: 10, bottom: 10),
                               decoration: BoxDecoration(
                                   color: Color(e),
                                   border: Border.all(
@@ -90,17 +109,24 @@ class _CategoryFormState extends State<CategoryForm> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final CategoriesCompanion categoriesCompanion =
+                          CategoriesCompanion categoriesCompanion =
                               CategoriesCompanion(
-                                  color: drift.Value('$selectedColor'),
-                                  category:
-                                      drift.Value(categoryTextController.text));
+                            id: widget.categoriesCompanion == null
+                                ? drift.Value.absent()
+                                : widget.categoriesCompanion!.id,
+                            color: drift.Value('$selectedColor'),
+                            category:
+                                drift.Value(widget.categoryTextController.text),
+                          );
+
                           BlocProvider.of<CategoryBloc>(context)
                               .add(AddCategory(category: categoriesCompanion));
                           Navigator.of(context).pop();
                         }
                       },
-                      child: Text('Create'),
+                      child: widget.categoriesCompanion == null
+                          ? const Text('Create')
+                          : const Text('Update'),
                     ),
                   )
                 ],
@@ -112,7 +138,7 @@ class _CategoryFormState extends State<CategoryForm> {
 
   @override
   void dispose() {
-    categoryTextController.dispose();
+    widget.categoryTextController.dispose();
     super.dispose();
   }
 }

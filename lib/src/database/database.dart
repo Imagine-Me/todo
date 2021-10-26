@@ -44,7 +44,7 @@ class TodoTable extends _$TodoTable {
   }
 
   Future<int> addCategory(CategoriesCompanion entity) {
-    return into(categories).insert(entity);
+    return into(categories).insertOnConflictUpdate(entity);
   }
 
   Future deleteCategory(CategoriesCompanion entity) {

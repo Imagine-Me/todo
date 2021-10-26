@@ -13,18 +13,24 @@ class CategoryScreen extends StatelessWidget {
   Widget floatingButton() {
     return Builder(builder: (context) {
       return FloatingActionButton(
-        onPressed: () => onFloatingButtonPressed(context),
+        onPressed: () => onFloatingButtonPressed(context, null),
         child: const Icon(Icons.add),
       );
     });
   }
 
-  void onFloatingButtonPressed(context) {
+  void onFloatingButtonPressed(
+      context, CategoriesCompanion? categoriesCompanion) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return const CategoryForm();
+        return CategoryForm(
+          categoriesCompanion: categoriesCompanion,
+        );
       },
     );
   }
@@ -57,6 +63,16 @@ class CategoryScreen extends StatelessWidget {
                         child: CardMain(
                           color: int.parse(item.color),
                           category: item.category,
+                          onTap: () {
+                            final CategoriesCompanion categoriesCompanion =
+                                CategoriesCompanion(
+                              id: drift.Value(item.id),
+                              category: drift.Value(item.category),
+                              color: drift.Value(item.color),
+                            );
+                            onFloatingButtonPressed(
+                                context, categoriesCompanion);
+                          },
                         ),
                         onDismissed: (_) {
                           BlocProvider.of<CategoryBloc>(context).add(
