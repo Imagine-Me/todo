@@ -7,6 +7,7 @@ import 'package:todo/src/logic/bloc/todo_bloc.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
+import 'package:todo/src/presentation/widgets/todo_form.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,19 +15,34 @@ class HomeScreen extends StatelessWidget {
   Widget floatingButton() {
     return Builder(builder: (context) {
       return FloatingActionButton(
-        onPressed: () => onFloatingActionButtonPressed(context),
+        onPressed: () => onFloatingActionButtonPressed(context, null),
         child: const Icon(Icons.add),
       );
     });
   }
 
-  onFloatingActionButtonPressed(context) {
-    final TodosCompanion todosCompanion = TodosCompanion(
-      category: drift.Value(1),
-      title: drift.Value('First assignment'),
+  onFloatingActionButtonPressed(context, TodosCompanion? todosCompanion) {
+    final categories =
+        BlocProvider.of<TodoBloc>(context).state.categoryState.categories;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+      builder: (BuildContext context) {
+        return TodoForm(
+          categories: categories,
+        );
+      },
     );
-    BlocProvider.of<TodoBloc>(context)
-        .add(AddTodo(todosCompanion: todosCompanion));
+    // final TodosCompanion todosCompanion = TodosCompanion(
+    //   category: drift.Value(1),
+    //   title: drift.Value('First assignment'),
+    // );
+    // BlocProvider.of<TodoBloc>(context)
+    //     .add(AddTodo(todosCompanion: todosCompanion));
   }
 
   onCheckBoxClickHandler(bool? val, Todo entity, context) {

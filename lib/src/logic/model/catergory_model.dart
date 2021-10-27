@@ -18,3 +18,4 @@ class CategoryModel {
     return progress;
   }
 }
+
