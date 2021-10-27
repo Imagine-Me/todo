@@ -9,4 +9,12 @@ class CategoryModel {
       required this.totalTasks,
       required this.completedTasks,
       required this.color});
+
+  double get progress {
+    double progress = completedTasks / totalTasks;
+    if (progress.isNaN) {
+      progress = 0;
+    }
+    return progress;
+  }
 }

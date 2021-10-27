@@ -31,7 +31,7 @@ class CardHome extends StatelessWidget {
                     const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               )),
               LinearProgressIndicator(
-                value: .9,
+                value: categoryModel.progress,
                 backgroundColor: Colors.grey,
                 color: Color(categoryModel.color),
               )
