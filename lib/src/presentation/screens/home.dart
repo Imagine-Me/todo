@@ -29,6 +29,18 @@ class HomeScreen extends StatelessWidget {
         .add(AddTodo(todosCompanion: todosCompanion));
   }
 
+  onCheckBoxClickHandler(bool? val, Todo entity, context) {
+    final TodosCompanion todosCompanion = TodosCompanion(
+        id: drift.Value(entity.id),
+        title: drift.Value(entity.title),
+        content: drift.Value(entity.content),
+        isCompleted: drift.Value(val ?? false),
+        category: drift.Value(entity.category));
+
+    BlocProvider.of<TodoBloc>(context)
+        .add(ToggleCompletedTodo(todosCompanion: todosCompanion));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -76,7 +88,11 @@ class HomeScreen extends StatelessWidget {
               return ListView.builder(
                 itemCount: state.todoCard.length,
                 itemBuilder: (context, index) {
-                  return TodoCard(todoModel: state.todoCard[index]);
+                  return TodoCard(
+                    todoModel: state.todoCard[index],
+                    checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
+                        val, state.todos[index], context),
+                  );
                 },
               );
             }),

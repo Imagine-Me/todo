@@ -14,3 +14,8 @@ class AddTodo extends TodoEvent {
   final TodosCompanion todosCompanion;
   AddTodo({required this.todosCompanion});
 }
+
+class ToggleCompletedTodo extends TodoEvent {
+  final TodosCompanion todosCompanion;
+  ToggleCompletedTodo({required this.todosCompanion});
+}

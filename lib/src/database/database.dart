@@ -46,6 +46,10 @@ class TodoTable extends _$TodoTable {
     return into(todos).insertOnConflictUpdate(entity);
   }
 
+  Future<void> toggleCompleted(TodosCompanion entity) {
+    return update(todos).replace(entity);
+  }
+
   //! CATEGORY TABLE
   Stream<List<Category>> watchCategories() {
     return (select(categories)
