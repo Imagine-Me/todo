@@ -19,8 +19,17 @@ class CardHome extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text('${categoryModel.totalTasks} Tasks'),
-              Expanded(child: Text(categoryModel.category)),
+              Text(
+                '${categoryModel.totalTasks} Tasks',
+                style:
+                    const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              Expanded(
+                  child: Text(
+                categoryModel.category,
+                style:
+                    const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+              )),
               LinearProgressIndicator(
                 value: .9,
                 backgroundColor: Colors.grey,

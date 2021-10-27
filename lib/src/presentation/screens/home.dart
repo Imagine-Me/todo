@@ -46,6 +46,9 @@ class HomeScreen extends StatelessWidget {
             'CATEGORIES',
             style: TextStyle(fontSize: 16),
           ),
+          const SizedBox(
+            height: 5,
+          ),
           SizedBox(
             height: 100,
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
@@ -64,6 +67,9 @@ class HomeScreen extends StatelessWidget {
           const Text(
             'TODOS',
             style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(
+            height: 5,
           ),
           Expanded(
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
