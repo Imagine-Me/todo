@@ -4,13 +4,15 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+
 part 'database.g.dart';
 
 class Todos extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
-  TextColumn get content => text()();
+  TextColumn get content => text().nullable()();
   IntColumn get category => integer().nullable()();
+  BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
 }
 
 @DataClassName('Category')
@@ -34,6 +36,15 @@ class TodoTable extends _$TodoTable {
 
   @override
   int get schemaVersion => 1;
+
+  //! TODO TABLE
+  Stream<List<Todo>> watchTodos() {
+    return (select(todos)..orderBy([(t) => OrderingTerm.desc(t.id)])).watch();
+  }
+
+  Future<int> addTodo(TodosCompanion entity) {
+    return into(todos).insertOnConflictUpdate(entity);
+  }
 
   //! CATEGORY TABLE
   Stream<List<Category>> watchCategories() {

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:todo/src/presentation/widgets/app_bar.dart' as custom_app_bar;
 
 class Layout extends StatelessWidget {
-  const Layout({Key? key, required this.body,required this.floatingButton}) : super(key: key);
+  const Layout({Key? key, required this.body, required this.floatingButton})
+      : super(key: key);
 
   final Widget body;
   final Widget floatingButton;
@@ -11,7 +12,33 @@ class Layout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(),
+      drawer: Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Home'),
+              onTap: () {
+                // Update the state of the app.
+                // ...
+              },
+            ),
+            ListTile(
+              title: const Text('Category'),
+              onTap: () {
+                Navigator.of(context).pushNamed('/category');
+              },
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

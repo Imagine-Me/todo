@@ -8,7 +8,7 @@ part 'category_event.dart';
 part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  late StreamSubscription<List<Category>> tableStream;
+  late final StreamSubscription<List<Category>> tableStream;
 
   CategoryBloc() : super(CategoryState()) {
     on<GetCategory>((event, emit) {
