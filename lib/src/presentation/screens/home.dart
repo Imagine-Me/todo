@@ -2,7 +2,6 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/category_bloc.dart';
 import 'package:todo/src/logic/bloc/todo_bloc.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
@@ -21,6 +20,40 @@ class HomeScreen extends StatelessWidget {
     });
   }
 
+  List<Widget> topSection() {
+    return [
+      const Text(
+        'Hi John',
+        style: TextStyle(fontSize: 32),
+      ),
+      const SizedBox(
+        height: 5,
+      ),
+      const Text(
+        'CATEGORIES',
+        style: TextStyle(fontSize: 16),
+      ),
+      const SizedBox(
+        height: 5,
+      )
+    ];
+  }
+
+  List<Widget> middleSection() {
+    return [
+      const SizedBox(
+        height: 5,
+      ),
+      const Text(
+        'TODOS',
+        style: TextStyle(fontSize: 16),
+      ),
+      const SizedBox(
+        height: 5,
+      ),
+    ];
+  }
+
   onFloatingActionButtonPressed(context, TodosCompanion? todosCompanion) {
     final categories =
         BlocProvider.of<TodoBloc>(context).state.categoryState.categories;
@@ -37,12 +70,6 @@ class HomeScreen extends StatelessWidget {
         );
       },
     );
-    // final TodosCompanion todosCompanion = TodosCompanion(
-    //   category: drift.Value(1),
-    //   title: drift.Value('First assignment'),
-    // );
-    // BlocProvider.of<TodoBloc>(context)
-    //     .add(AddTodo(todosCompanion: todosCompanion));
   }
 
   onCheckBoxClickHandler(bool? val, Todo entity, context) {
@@ -63,22 +90,9 @@ class HomeScreen extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Hi John',
-            style: TextStyle(fontSize: 32),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          const Text(
-            'CATEGORIES',
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
+          ...topSection(),
           SizedBox(
-            height: 100,
+            height: 110,
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -89,16 +103,7 @@ class HomeScreen extends StatelessWidget {
               );
             }),
           ),
-          const SizedBox(
-            height: 5,
-          ),
-          const Text(
-            'TODOS',
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
+          ...middleSection(),
           Expanded(
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
               return ListView.builder(

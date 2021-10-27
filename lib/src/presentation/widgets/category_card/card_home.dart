@@ -18,21 +18,21 @@ class CardHome extends StatelessWidget {
           padding: const EdgeInsets.all(15),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
                 '${categoryModel.totalTasks} Tasks',
                 style:
                     const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
               ),
-              Expanded(
-                  child: Text(
+              Text(
                 categoryModel.category,
                 style:
                     const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-              )),
+              ),
               LinearProgressIndicator(
                 value: categoryModel.progress,
-                backgroundColor: Colors.grey,
+                backgroundColor: Colors.grey[100],
                 color: Color(categoryModel.color),
               )
             ],

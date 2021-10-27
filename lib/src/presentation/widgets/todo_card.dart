@@ -36,9 +36,7 @@ class TodoCard extends StatelessWidget {
             ),
             Text(
               todoModel.title,
-              style: const TextStyle(
-                fontSize: 18,
-              ),
+              style: TextStyle(fontSize: 18, decoration: todoModel.isCompleted ? TextDecoration.lineThrough:  null),
             )
           ],
         ),
