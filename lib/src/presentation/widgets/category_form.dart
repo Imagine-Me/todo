@@ -5,21 +5,16 @@ import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category_bloc.dart';
 
 class CategoryForm extends StatefulWidget {
-  CategoryForm({Key? key, this.categoriesCompanion}) : super(key: key) {
-    categoryTextController = TextEditingController(
-        text: categoriesCompanion == null
-            ? ''
-            : categoriesCompanion!.category.value);
-  }
+  const CategoryForm({Key? key, this.categoriesCompanion}) : super(key: key);
 
   final CategoriesCompanion? categoriesCompanion;
-  late final TextEditingController categoryTextController;
 
   @override
   State<CategoryForm> createState() => _CategoryFormState();
 }
 
 class _CategoryFormState extends State<CategoryForm> {
+  late final TextEditingController categoryTextController;
   final List<int> colors = [
     0xfffcba03,
     0xffd65336,
@@ -39,6 +34,10 @@ class _CategoryFormState extends State<CategoryForm> {
   @override
   void initState() {
     super.initState();
+    categoryTextController = TextEditingController(
+        text: widget.categoriesCompanion == null
+            ? ''
+            : widget.categoriesCompanion!.category.value);
     selectedColor = widget.categoriesCompanion == null
         ? 0xfffcba03
         : int.parse(widget.categoriesCompanion!.color.value);
@@ -56,7 +55,7 @@ class _CategoryFormState extends State<CategoryForm> {
               child: Column(
                 children: [
                   TextFormField(
-                    controller: widget.categoryTextController,
+                    controller: categoryTextController,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -115,7 +114,7 @@ class _CategoryFormState extends State<CategoryForm> {
                                 : widget.categoriesCompanion!.id,
                             color: drift.Value('$selectedColor'),
                             category:
-                                drift.Value(widget.categoryTextController.text),
+                                drift.Value(categoryTextController.text),
                           );
 
                           BlocProvider.of<CategoryBloc>(context)
@@ -137,7 +136,7 @@ class _CategoryFormState extends State<CategoryForm> {
 
   @override
   void dispose() {
-    widget.categoryTextController.dispose();
+    categoryTextController.dispose();
     super.dispose();
   }
 }
