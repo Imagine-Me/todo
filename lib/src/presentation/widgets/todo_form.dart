@@ -16,15 +16,32 @@ class TodoForm extends StatefulWidget {
 }
 
 class _TodoFormState extends State<TodoForm> {
-  final TextEditingController titleTextController = TextEditingController();
-  final TextEditingController contentTextController = TextEditingController();
+  late final TextEditingController titleTextController;
+  late final TextEditingController contentTextController;
   final _formKey = GlobalKey<FormState>();
 
   int? selectedCategory;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.todosCompanion != null) {
+      titleTextController =
+          TextEditingController(text: widget.todosCompanion!.title.value);
+      contentTextController =
+          TextEditingController(text: widget.todosCompanion!.content.value);
+      selectedCategory = widget.todosCompanion!.category.value;
+    } else {
+      titleTextController = TextEditingController();
+      contentTextController = TextEditingController();
+    }
+  }
 
   onSubmitForm() {
     if (_formKey.currentState!.validate()) {
       final TodosCompanion todosCompanion = TodosCompanion(
+          id: widget.todosCompanion == null
+              ? const drift.Value.absent()
+              : widget.todosCompanion!.id,
           category: drift.Value(selectedCategory),
           content: drift.Value(contentTextController.text),
           title: drift.Value(titleTextController.text));

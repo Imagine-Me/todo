@@ -67,6 +67,7 @@ class HomeScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return TodoForm(
           categories: categories,
+          todosCompanion: todosCompanion,
         );
       },
     );
@@ -108,6 +109,16 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
+  onTodoTap(Todo entity, context) {
+    final TodosCompanion todosCompanion = TodosCompanion(
+      id: drift.Value(entity.id),
+      title: drift.Value(entity.title),
+      content: drift.Value(entity.content),
+      category: drift.Value(entity.category),
+    );
+    onFloatingActionButtonPressed(context, todosCompanion);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -144,6 +155,8 @@ class HomeScreen extends StatelessWidget {
                     ),
                     child: TodoCard(
                       todoModel: state.todoCard[index],
+                      onTapHandler: () =>
+                          onTodoTap(state.todos[index], context),
                       checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
                           val, state.todos[index], context),
                     ),
