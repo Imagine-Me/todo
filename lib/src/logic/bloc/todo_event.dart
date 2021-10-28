@@ -19,3 +19,9 @@ class ToggleCompletedTodo extends TodoEvent {
   final TodosCompanion todosCompanion;
   ToggleCompletedTodo({required this.todosCompanion});
 }
+
+class DeleteTodo extends TodoEvent {
+  final TodosCompanion todosCompanion;
+
+  DeleteTodo({required this.todosCompanion});
+}

@@ -74,14 +74,38 @@ class HomeScreen extends StatelessWidget {
 
   onCheckBoxClickHandler(bool? val, Todo entity, context) {
     final TodosCompanion todosCompanion = TodosCompanion(
-        id: drift.Value(entity.id),
-        title: drift.Value(entity.title),
-        content: drift.Value(entity.content),
-        isCompleted: drift.Value(val ?? false),
-        category: drift.Value(entity.category));
+      id: drift.Value(entity.id),
+      title: drift.Value(entity.title),
+      content: drift.Value(entity.content),
+      isCompleted: drift.Value(val ?? false),
+      category: drift.Value(entity.category),
+    );
 
     BlocProvider.of<TodoBloc>(context)
         .add(ToggleCompletedTodo(todosCompanion: todosCompanion));
+  }
+
+  onTodoDismissed(DismissDirection direction, Todo entity, context) {
+    if (direction == DismissDirection.endToStart) {
+      // Check if task already completed
+      if (entity.isCompleted) {
+        // DELETE TODO
+        final TodosCompanion todosCompanion = TodosCompanion(
+          id: drift.Value(entity.id),
+          title: drift.Value(entity.title),
+          content: drift.Value(entity.content),
+          isCompleted: drift.Value(entity.isCompleted),
+          category: drift.Value(entity.category),
+        );
+        BlocProvider.of<TodoBloc>(context)
+            .add(DeleteTodo(todosCompanion: todosCompanion));
+      } else {
+        // ADD TO COMPLETE
+        onCheckBoxClickHandler(true, entity, context);
+      }
+    } else if (direction == DismissDirection.startToEnd) {
+      onCheckBoxClickHandler(false, entity, context);
+    }
   }
 
   @override
@@ -109,10 +133,22 @@ class HomeScreen extends StatelessWidget {
               return ListView.builder(
                 itemCount: state.todoCard.length,
                 itemBuilder: (context, index) {
-                  return TodoCard(
-                    todoModel: state.todoCard[index],
-                    checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
-                        val, state.todos[index], context),
+                  return Dismissible(
+                    key: UniqueKey(),
+                    direction: state.todos[index].isCompleted
+                        ? DismissDirection.horizontal
+                        : DismissDirection.endToStart,
+                    background: Container(color: Colors.greenAccent),
+                    secondaryBackground: Container(
+                      color: Colors.redAccent,
+                    ),
+                    child: TodoCard(
+                      todoModel: state.todoCard[index],
+                      checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
+                          val, state.todos[index], context),
+                    ),
+                    onDismissed: (DismissDirection direction) =>
+                        onTodoDismissed(direction, state.todos[index], context),
                   );
                 },
               );

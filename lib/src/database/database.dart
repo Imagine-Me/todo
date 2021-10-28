@@ -50,6 +50,10 @@ class TodoTable extends _$TodoTable {
     return update(todos).replace(entity);
   }
 
+  Future deleteTodo(TodosCompanion entity) {
+    return (delete(todos)..delete(entity)).go();
+  }
+
   //! CATEGORY TABLE
   Stream<List<Category>> watchCategories() {
     return (select(categories)
