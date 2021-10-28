@@ -22,6 +22,14 @@ class Categories extends Table {
   TextColumn get color => text()();
 }
 
+class Users extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  BoolColumn get showDrawer => boolean().withDefault(const Constant(true))();
+  BoolColumn get showCategory => boolean().withDefault(const Constant(true))();
+  BoolColumn get showTodo => boolean().withDefault(const Constant(true))();
+}
+
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
@@ -30,12 +38,17 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [Todos, Categories])
+@DriftDatabase(tables: [Todos, Categories, Users])
 class TodoTable extends _$TodoTable {
   TodoTable() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
+
+  //! USERS TABLE
+  Future<List<User>> getUsers() {
+    return select(users).get();
+  }
 
   //! TODO TABLE
   Stream<List<Todo>> watchTodos() {
