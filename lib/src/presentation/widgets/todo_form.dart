@@ -17,7 +17,7 @@ class TodoForm extends StatefulWidget {
 
 class _TodoFormState extends State<TodoForm> {
   final TextEditingController titleTextController = TextEditingController();
-  final TextEditingController contentTextController= TextEditingController();
+  final TextEditingController contentTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   int? selectedCategory;
@@ -36,10 +36,9 @@ class _TodoFormState extends State<TodoForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: SizedBox(
-        height: 380,
+    return Wrap(children: [
+      Padding(
+        padding: MediaQuery.of(context).viewInsets,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Form(
@@ -109,6 +108,7 @@ class _TodoFormState extends State<TodoForm> {
                           .toList(),
                       onChanged: (int? val) {
                         setState(() {
+                          FocusScope.of(context).requestFocus(FocusNode());
                           selectedCategory = val;
                         });
                       },
@@ -127,7 +127,7 @@ class _TodoFormState extends State<TodoForm> {
               )),
         ),
       ),
-    );
+    ]);
   }
 
   @override

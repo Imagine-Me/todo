@@ -46,10 +46,9 @@ class _CategoryFormState extends State<CategoryForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: SizedBox(
-        height: 270,
+    return Wrap(children: [
+      Padding(
+        padding: MediaQuery.of(context).viewInsets,
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Form(
@@ -133,7 +132,7 @@ class _CategoryFormState extends State<CategoryForm> {
               )),
         ),
       ),
-    );
+    ]);
   }
 
   @override
