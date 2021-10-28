@@ -66,9 +66,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   void subscribeCategory() {
     categoryStream = categoryBloc.stream.listen((event) {
       _categoryState = event;
-      if (state.todos.isNotEmpty) {
-        add(GetTodo(todos: state.todos));
-      }
+      add(GetTodo(todos: state.todos));
     });
   }
 

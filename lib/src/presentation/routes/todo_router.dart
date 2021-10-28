@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:todo/src/presentation/screens/category.dart';
 import 'package:todo/src/presentation/screens/home.dart';
+import 'package:todo/src/presentation/screens/initial.dart';
 
 class TodoRouter {
   Route onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
+      case '/initial':
+        return MaterialPageRoute(builder: (_) => const InitialScreen());
       case '/':
         return MaterialPageRoute(builder: (_) => const HomeScreen());
-        case '/category':
+      case '/category':
         return MaterialPageRoute(builder: (_) => const CategoryScreen());
       default:
         throw UnimplementedError('Unknown error');
