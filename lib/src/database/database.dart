@@ -50,6 +50,10 @@ class TodoTable extends _$TodoTable {
     return select(users).get();
   }
 
+  Future<int> addUser(UsersCompanion entity) {
+    return into(users).insert(entity);
+  }
+
   //! TODO TABLE
   Stream<List<Todo>> watchTodos() {
     return (select(todos)..orderBy([(t) => OrderingTerm.desc(t.id)])).watch();
