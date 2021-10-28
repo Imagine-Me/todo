@@ -14,7 +14,6 @@ class AppBar extends StatelessWidget {
           IconButton(onPressed: () {
             Scaffold.of(context).openDrawer();
           }, icon: const Icon(Icons.menu)),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search))
         ],
       ),
     );
