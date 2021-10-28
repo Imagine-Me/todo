@@ -33,8 +33,7 @@ class CardHome extends StatelessWidget {
               children: <Widget>[
                 Text(
                   '${categoryModel.totalTasks} Tasks',
-                  style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w600),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 Text(
                   categoryModel.category,

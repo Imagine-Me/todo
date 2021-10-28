@@ -5,6 +5,7 @@ import 'package:todo/src/logic/bloc/category_bloc.dart';
 import 'package:todo/src/logic/bloc/todo_bloc.dart';
 import 'package:todo/src/logic/bloc/user_bloc.dart';
 import 'package:todo/src/presentation/routes/todo_router.dart';
+import 'package:todo/src/presentation/theme/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Todo',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: AppTheme.appTheme(),
         initialRoute: '/initial',
         onGenerateRoute: todoRouter.onGenerateRoute,
       ),

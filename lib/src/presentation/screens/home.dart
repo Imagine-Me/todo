@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo_bloc.dart';
+import 'package:todo/src/logic/bloc/user_bloc.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
@@ -22,19 +23,27 @@ class HomeScreen extends StatelessWidget {
 
   List<Widget> topSection() {
     return [
-      const Text(
-        'Hi John',
-        style: TextStyle(fontSize: 32),
+      BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          return Text(
+            'Hi ${state.name}',
+            style: Theme.of(context).textTheme.headline2,
+          );
+        },
       ),
       const SizedBox(
-        height: 5,
+        height: 10,
       ),
-      const Text(
-        'CATEGORIES',
-        style: TextStyle(fontSize: 16),
+      Builder(
+        builder: (context) {
+          return Text(
+            'CATEGORIES',
+            style: Theme.of(context).textTheme.headline5,
+          );
+        }
       ),
       const SizedBox(
-        height: 5,
+        height: 10,
       )
     ];
   }
@@ -42,7 +51,7 @@ class HomeScreen extends StatelessWidget {
   List<Widget> middleSection() {
     return [
       const SizedBox(
-        height: 5,
+        height: 10,
       ),
       BlocBuilder<TodoBloc, TodoState>(
         builder: (context, state) {
@@ -59,7 +68,7 @@ class HomeScreen extends StatelessWidget {
           }
           return Text(
             'TODOS $filterString',
-            style: TextStyle(fontSize: 16),
+            style: Theme.of(context).textTheme.headline5,
           );
         },
       ),
