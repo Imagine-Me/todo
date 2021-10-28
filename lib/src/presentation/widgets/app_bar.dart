@@ -11,7 +11,9 @@ class AppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+          IconButton(onPressed: () {
+            Scaffold.of(context).openDrawer();
+          }, icon: const Icon(Icons.menu)),
           IconButton(onPressed: () {}, icon: const Icon(Icons.search))
         ],
       ),

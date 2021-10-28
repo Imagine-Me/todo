@@ -5,9 +5,15 @@ abstract class TodoEvent {}
 
 class GetTodo extends TodoEvent {
   final List<Todo> todos;
-  GetTodo({
-    this.todos = const [],
-  });
+  final int? category;
+  final String? keyword;
+  GetTodo({this.todos = const [], this.category, this.keyword});
+}
+
+class FilterTodo extends TodoEvent {
+  final int? category;
+  final String keyword;
+  FilterTodo({this.category, required this.keyword});
 }
 
 class AddTodo extends TodoEvent {

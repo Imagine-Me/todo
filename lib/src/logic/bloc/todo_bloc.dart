@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:drift/drift.dart';
 import 'package:meta/meta.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category_bloc.dart';
@@ -17,12 +16,19 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   late final StreamSubscription categoryStream;
 
   CategoryState _categoryState = CategoryState();
+  int? _category;
+  String _keyWord = '';
 
   TodoBloc({required this.categoryBloc})
       : super(TodoState(categoryState: CategoryState())) {
     on<GetTodo>((event, emit) {
       print('TODO TABLE CHANGED, EMITING NEW STATE');
-      emit(TodoState(todos: event.todos, categoryState: _categoryState));
+      emit(TodoState(
+        todos: event.todos,
+        categoryState: _categoryState,
+        category: _category,
+        keyword: _keyWord,
+      ));
     });
     on<AddTodo>((event, _) {
       print('ADDING NEW TODO');
@@ -31,6 +37,17 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<ToggleCompletedTodo>((event, _) {
       print('TOGGLING CHECKBOX');
       database.toggleCompleted(event.todosCompanion);
+    });
+    on<FilterTodo>((event, emit) {
+      print('Filtering the todo');
+      _category = event.category;
+      _keyWord = event.keyword;
+      final newState = TodoState(
+          categoryState: _categoryState,
+          todos: state.todos,
+          keyword: event.keyword,
+          category: event.category);
+      emit(newState);
     });
     on<DeleteTodo>((event, _) {
       print('DELETING TODO');

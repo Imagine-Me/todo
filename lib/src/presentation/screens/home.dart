@@ -44,9 +44,24 @@ class HomeScreen extends StatelessWidget {
       const SizedBox(
         height: 5,
       ),
-      const Text(
-        'TODOS',
-        style: TextStyle(fontSize: 16),
+      BlocBuilder<TodoBloc, TodoState>(
+        builder: (context, state) {
+          String filterString = '';
+          if (state.categoryName != null || state.keyword != '') {
+            filterString += '(';
+            if (state.categoryName != null) {
+              filterString += ' Category: ${state.categoryName}';
+            }
+            if (state.keyword != '') {
+              filterString += ', Keyword: ${state.keyword}';
+            }
+            filterString += ' )';
+          }
+          return Text(
+            'TODOS $filterString',
+            style: TextStyle(fontSize: 16),
+          );
+        },
       ),
       const SizedBox(
         height: 5,
