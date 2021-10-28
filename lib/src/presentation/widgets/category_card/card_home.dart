@@ -27,6 +27,7 @@ class CardHome extends StatelessWidget {
               ),
               Text(
                 categoryModel.category,
+                overflow: TextOverflow.ellipsis,
                 style:
                     const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               ),

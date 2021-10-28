@@ -34,9 +34,16 @@ class TodoCard extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            Text(
-              todoModel.title,
-              style: TextStyle(fontSize: 18, decoration: todoModel.isCompleted ? TextDecoration.lineThrough:  null),
+            Expanded(
+              child: Text(
+                todoModel.title,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: 18,
+                    decoration: todoModel.isCompleted
+                        ? TextDecoration.lineThrough
+                        : null),
+              ),
             )
           ],
         ),
