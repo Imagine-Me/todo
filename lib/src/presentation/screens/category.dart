@@ -19,6 +19,15 @@ class CategoryScreen extends StatelessWidget {
     });
   }
 
+  Widget emptyMessage(context) {
+    return Center(
+      child: Text(
+        'Wow, such empty!',
+        style: Theme.of(context).textTheme.headline3,
+      ),
+    );
+  }
+
   void onFloatingButtonPressed(
       context, CategoriesCompanion? categoriesCompanion) {
     showModalBottomSheet(
@@ -61,6 +70,9 @@ class CategoryScreen extends StatelessWidget {
           Expanded(
             child: BlocBuilder<CategoryBloc, CategoryState>(
               builder: (context, state) {
+                if (state.categories.isEmpty) {
+                  return emptyMessage(context);
+                }
                 return ListView.builder(
                     itemCount: state.categories.length,
                     itemBuilder: (context, index) {

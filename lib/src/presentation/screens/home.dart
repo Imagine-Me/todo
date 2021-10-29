@@ -21,6 +21,43 @@ class HomeScreen extends StatelessWidget {
     });
   }
 
+  Widget addCategory(context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'No Categories added, Add now',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline3,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/category');
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Create Category'),
+            style: ElevatedButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 25)),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget todoEmpty(context) {
+    return Center(
+      child: Text(
+        'Wow, such empty!',
+        style: Theme.of(context).textTheme.headline3,
+      ),
+    );
+  }
+
   List<Widget> topSection() {
     return [
       BlocBuilder<UserBloc, UserState>(
@@ -174,8 +211,11 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
               if (state is TodoLoaded) {
-                if(state.todos.isEmpty){
-                  return Center(child: Text('Wow, such empty!',style: Theme.of(context).textTheme.headline4,),);
+                if (state.categoryState.categories.isEmpty) {
+                  return addCategory(context);
+                }
+                if (state.todos.isEmpty) {
+                  return todoEmpty(context);
                 }
                 return ListView.builder(
                   itemCount: state.todoCard.length,
