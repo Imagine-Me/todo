@@ -34,14 +34,12 @@ class HomeScreen extends StatelessWidget {
       const SizedBox(
         height: 10,
       ),
-      Builder(
-        builder: (context) {
-          return Text(
-            'CATEGORIES',
-            style: Theme.of(context).textTheme.headline5,
-          );
-        }
-      ),
+      Builder(builder: (context) {
+        return Text(
+          'CATEGORIES',
+          style: Theme.of(context).textTheme.headline5,
+        );
+      }),
       const SizedBox(
         height: 10,
       )
@@ -56,15 +54,8 @@ class HomeScreen extends StatelessWidget {
       BlocBuilder<TodoBloc, TodoState>(
         builder: (context, state) {
           String filterString = '';
-          if (state.categoryName != null || state.keyword != '') {
-            filterString += '(';
-            if (state.categoryName != null) {
-              filterString += ' Category: ${state.categoryName}';
-            }
-            if (state.keyword != '') {
-              filterString += ', Keyword: ${state.keyword}';
-            }
-            filterString += ' )';
+          if (state.categoryName != null) {
+            filterString += '( Category: ${state.categoryName} )';
           }
           return Text(
             'TODOS $filterString',
@@ -108,6 +99,14 @@ class HomeScreen extends StatelessWidget {
 
     BlocProvider.of<TodoBloc>(context)
         .add(ToggleCompletedTodo(todosCompanion: todosCompanion));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: val != null && val
+            ? const Text('Todo moved to completed')
+            : const Text('Todo moved to uncompleted'),
+        duration: const Duration(milliseconds: 800),
+      ),
+    );
   }
 
   onTodoDismissed(DismissDirection direction, Todo entity, context) {
@@ -124,6 +123,15 @@ class HomeScreen extends StatelessWidget {
         );
         BlocProvider.of<TodoBloc>(context)
             .add(DeleteTodo(todosCompanion: todosCompanion));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Todo deleted',
+            ),
+            duration: Duration(milliseconds: 800),
+            backgroundColor: Colors.red,
+          ),
+        );
       } else {
         // ADD TO COMPLETE
         onCheckBoxClickHandler(true, entity, context);
@@ -165,30 +173,40 @@ class HomeScreen extends StatelessWidget {
           ...middleSection(),
           Expanded(
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
-              return ListView.builder(
-                itemCount: state.todoCard.length,
-                itemBuilder: (context, index) {
-                  return Dismissible(
-                    key: UniqueKey(),
-                    direction: state.todos[index].isCompleted
-                        ? DismissDirection.horizontal
-                        : DismissDirection.endToStart,
-                    background: Container(color: Colors.greenAccent),
-                    secondaryBackground: Container(
-                      color: Colors.redAccent,
-                    ),
-                    child: TodoCard(
-                      todoModel: state.todoCard[index],
-                      onTapHandler: () =>
-                          onTodoTap(state.todos[index], context),
-                      checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
-                          val, state.todos[index], context),
-                    ),
-                    onDismissed: (DismissDirection direction) =>
-                        onTodoDismissed(direction, state.todos[index], context),
-                  );
-                },
-              );
+              if (state is TodoLoaded) {
+                if(state.todos.isEmpty){
+                  return Center(child: Text('Wow, such empty!',style: Theme.of(context).textTheme.headline4,),);
+                }
+                return ListView.builder(
+                  itemCount: state.todoCard.length,
+                  itemBuilder: (context, index) {
+                    return Dismissible(
+                      key: UniqueKey(),
+                      direction: state.todos[index].isCompleted
+                          ? DismissDirection.horizontal
+                          : DismissDirection.endToStart,
+                      background: Container(color: Colors.greenAccent),
+                      secondaryBackground: Container(
+                        color: Colors.redAccent,
+                      ),
+                      child: TodoCard(
+                        todoModel: state.todoCard[index],
+                        onTapHandler: () =>
+                            onTodoTap(state.todos[index], context),
+                        checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
+                            val, state.todos[index], context),
+                      ),
+                      onDismissed: (DismissDirection direction) =>
+                          onTodoDismissed(
+                              direction, state.todos[index], context),
+                    );
+                  },
+                );
+              } else {
+                return const Center(
+                  child: Text('Loading....'),
+                );
+              }
             }),
           ),
         ],

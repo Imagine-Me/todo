@@ -1,14 +1,13 @@
 part of 'todo_bloc.dart';
 
-class TodoState {
-  List<Todo> todos;
-  CategoryState categoryState;
-  String keyword;
-  int? category;
-  TodoState({
+@immutable
+abstract class TodoState {
+  final List<Todo> todos;
+  final CategoryState categoryState;
+  final int? category;
+  const TodoState({
     this.todos = const [],
     required this.categoryState,
-    this.keyword = '',
     this.category,
   });
 
@@ -23,9 +22,7 @@ class TodoState {
 
   List<TodoModel> get todoCard {
     return todos
-        .where((element) =>
-            (category == null || element.category == category) &
-            (keyword == '' || element.title.contains(keyword)))
+        .where((element) => (category == null || element.category == category))
         .map((e) => TodoModel(
             title: e.title,
             color: categoryState.colors[e.category] ?? '0xff000000',
@@ -66,4 +63,15 @@ class TodoState {
 
     return result;
   }
+}
+
+class TodoInitial extends TodoState {
+  const TodoInitial({required CategoryState categoryState})
+      : super(categoryState: categoryState);
+}
+
+class TodoLoaded extends TodoState {
+  const TodoLoaded(
+      {required CategoryState categoryState, int? category, required List<Todo> todos})
+      : super(categoryState: categoryState, category: category, todos: todos);
 }

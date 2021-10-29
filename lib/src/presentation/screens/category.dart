@@ -35,6 +35,15 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
+  void onCardTap(item, context) {
+    final CategoriesCompanion categoriesCompanion = CategoriesCompanion(
+      id: drift.Value(item.id),
+      category: drift.Value(item.category),
+      color: drift.Value(item.color),
+    );
+    onFloatingButtonPressed(context, categoriesCompanion);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -63,16 +72,7 @@ class CategoryScreen extends StatelessWidget {
                         child: CardMain(
                           color: int.parse(item.color),
                           category: item.category,
-                          onTap: () {
-                            final CategoriesCompanion categoriesCompanion =
-                                CategoriesCompanion(
-                              id: drift.Value(item.id),
-                              category: drift.Value(item.category),
-                              color: drift.Value(item.color),
-                            );
-                            onFloatingButtonPressed(
-                                context, categoriesCompanion);
-                          },
+                          onTap: () => onCardTap(item, context),
                         ),
                         onDismissed: (_) {
                           BlocProvider.of<CategoryBloc>(context).add(
@@ -82,6 +82,13 @@ class CategoryScreen extends StatelessWidget {
                                 category: drift.Value(item.category),
                                 color: drift.Value(item.color),
                               ),
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Category Deleted'),
+                              duration: Duration(milliseconds: 800),
+                              backgroundColor: Colors.redAccent,
                             ),
                           );
                         },

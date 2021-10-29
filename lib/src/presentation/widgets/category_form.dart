@@ -43,6 +43,42 @@ class _CategoryFormState extends State<CategoryForm> {
         : int.parse(widget.categoriesCompanion!.color.value);
   }
 
+  onFormSubmit() {
+    if (_formKey.currentState!.validate()) {
+      CategoriesCompanion categoriesCompanion = CategoriesCompanion(
+        id: widget.categoriesCompanion == null
+            ? const drift.Value.absent()
+            : widget.categoriesCompanion!.id,
+        color: drift.Value('$selectedColor'),
+        category: drift.Value(categoryTextController.text),
+      );
+
+      BlocProvider.of<CategoryBloc>(context)
+          .add(AddCategory(category: categoriesCompanion));
+      Navigator.of(context).pop();
+      if (widget.categoriesCompanion != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('Category Updated', style: TextStyle(color: Colors.black)),
+            duration: Duration(milliseconds: 800),
+            backgroundColor: Colors.yellowAccent,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Category Added',
+            ),
+            duration: Duration(milliseconds: 800),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(children: [
@@ -105,23 +141,7 @@ class _CategoryFormState extends State<CategoryForm> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          CategoriesCompanion categoriesCompanion =
-                              CategoriesCompanion(
-                            id: widget.categoriesCompanion == null
-                                ? drift.Value.absent()
-                                : widget.categoriesCompanion!.id,
-                            color: drift.Value('$selectedColor'),
-                            category:
-                                drift.Value(categoryTextController.text),
-                          );
-
-                          BlocProvider.of<CategoryBloc>(context)
-                              .add(AddCategory(category: categoriesCompanion));
-                          Navigator.of(context).pop();
-                        }
-                      },
+                      onPressed: onFormSubmit,
                       child: widget.categoriesCompanion == null
                           ? const Text('Create')
                           : const Text('Update'),

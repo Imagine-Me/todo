@@ -17,17 +17,15 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   CategoryState _categoryState = CategoryState();
   int? _category;
-  String _keyWord = '';
 
   TodoBloc({required this.categoryBloc})
-      : super(TodoState(categoryState: CategoryState())) {
+      : super(TodoInitial(categoryState: CategoryState())) {
     on<GetTodo>((event, emit) {
       print('TODO TABLE CHANGED, EMITING NEW STATE');
-      emit(TodoState(
+      emit(TodoLoaded(
         todos: event.todos,
         categoryState: _categoryState,
         category: _category,
-        keyword: _keyWord,
       ));
     });
     on<AddTodo>((event, _) {
@@ -41,11 +39,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<FilterTodo>((event, emit) {
       print('Filtering the todo');
       _category = event.category;
-      _keyWord = event.keyword;
-      final newState = TodoState(
+      final newState = TodoLoaded(
           categoryState: _categoryState,
           todos: state.todos,
-          keyword: event.keyword,
           category: event.category);
       emit(newState);
     });
@@ -66,7 +62,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   void subscribeCategory() {
     categoryStream = categoryBloc.stream.listen((event) {
       _categoryState = event;
-      add(GetTodo(todos: state.todos));
+      if (state is TodoLoaded) {
+        add(GetTodo(todos: state.todos));
+      }
     });
   }
 

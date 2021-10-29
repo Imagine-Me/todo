@@ -48,6 +48,26 @@ class _TodoFormState extends State<TodoForm> {
       BlocProvider.of<TodoBloc>(context)
           .add(AddTodo(todosCompanion: todosCompanion));
       Navigator.of(context).pop();
+      if (widget.todosCompanion != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('Todo Updated', style: TextStyle(color: Colors.black)),
+            duration: Duration(milliseconds: 800),
+            backgroundColor: Colors.yellowAccent,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Todo Added',
+            ),
+            duration: Duration(milliseconds: 800),
+            backgroundColor: Colors.greenAccent,
+          ),
+        );
+      }
     }
   }
 
