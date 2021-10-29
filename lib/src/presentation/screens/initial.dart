@@ -39,7 +39,7 @@ class LoadingWidget extends StatelessWidget {
       body: Stack(
         children: [
           Center(
-            child: Image.asset('assets/ic_launcher.png'),
+            child: Image.asset('assets/todo_launcher.png'),
           ),
           Positioned(
             bottom: 12,
