@@ -17,7 +17,7 @@ class _InitialScreenState extends State<InitialScreen> {
     return BlocConsumer<UserBloc, UserState>(
       listener: (context, state) {
         if (state is UserLoaded) {
-          Navigator.of(context).pushNamed('/');
+          Navigator.of(context).popAndPushNamed('/');
         }
       },
       builder: (context, state) {
