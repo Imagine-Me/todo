@@ -1,4 +1,7 @@
-# todo
+# Todo App
 
-## Design 
-[click here](https://www.figma.com/file/TWyrIaOWxAthrW2AFGgGMx/Todo)
+A simple application to manage the todos using flutter
+
+### Screen
+
+![](ss.gif)
