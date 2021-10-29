@@ -4,16 +4,26 @@ import 'package:todo/src/presentation/screens/home.dart';
 import 'package:todo/src/presentation/screens/initial.dart';
 
 class TodoRouter {
-  Route onGenerateRoute(RouteSettings routeSettings) {
+  ModalRoute onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case '/initial':
-        return MaterialPageRoute(builder: (_) => const InitialScreen());
+        return MaterialPageRoute(
+            settings: routeSettings, builder: (_) => const InitialScreen());
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(
+            settings: routeSettings, builder: (_) => const HomeScreen());
       case '/category':
-        return MaterialPageRoute(builder: (_) => const CategoryScreen());
+        return MaterialPageRoute(
+            settings: routeSettings, builder: (_) => const CategoryScreen());
       default:
-        throw UnimplementedError('Unknown error');
+        throw UnimplementedError('Route is not implemented');
+    }
+  }
+
+  static void pushRoute(String route, BuildContext context) {
+    if (ModalRoute.of(context) != null &&
+        ModalRoute.of(context)!.settings.name != route) {
+      Navigator.of(context).pushNamed(route);
     }
   }
 }

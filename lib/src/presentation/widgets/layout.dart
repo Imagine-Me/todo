@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/src/logic/bloc/user_bloc.dart';
+import 'package:todo/src/presentation/routes/todo_router.dart';
 
 import 'package:todo/src/presentation/widgets/app_bar.dart' as custom_app_bar;
 
@@ -17,23 +20,43 @@ class Layout extends StatelessWidget {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor,
               ),
-              child: Text('Drawer Header'),
+              child: BlocBuilder<UserBloc, UserState>(
+                builder: (context, state) {
+                  return Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      state.name,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Colors.white),
+                    ),
+                  );
+                },
+              ),
             ),
             ListTile(
-              title: const Text('Home'),
+              title: Text(
+                'Home',
+                style: Theme.of(context).textTheme.headline6,
+              ),
               onTap: () {
-                // Update the state of the app.
-                // ...
+                Navigator.of(context).pop();
+                TodoRouter.pushRoute('/', context);
               },
             ),
             ListTile(
-              title: const Text('Category'),
+              title: Text(
+                'Category',
+                style: Theme.of(context).textTheme.headline6,
+              ),
               onTap: () {
-                Navigator.of(context).pushNamed('/category');
+                Navigator.of(context).pop();
+                TodoRouter.pushRoute('/category', context);
               },
             ),
           ],
