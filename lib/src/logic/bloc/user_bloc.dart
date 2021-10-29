@@ -11,9 +11,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final List<User> users = await database.getUsers();
       if (users.isNotEmpty) {
         emit(UserLoaded(user: users[0]));
+      } else {
+        emit(const UserNotFound());
       }
     });
-    on<AddUser>((event,emit) async {
+    on<AddUser>((event, emit) async {
       await database.addUser(event.usersCompanion);
       add(GetUser());
     });
