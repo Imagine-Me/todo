@@ -11,4 +11,7 @@ part of 'category_bloc.dart';
 class CategoryState {
   CategoryState({this.categories = const []});
   List<Category> categories;
+
+  Map<int, String> get colors =>
+      {for (Category category in categories) category.id: category.color};
 }

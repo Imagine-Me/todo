@@ -13,3 +13,9 @@ class AddCategory extends CategoryEvent {
   final CategoriesCompanion category;
   AddCategory({required this.category});
 }
+
+class DeleteCategory extends CategoryEvent {
+  final CategoriesCompanion category;
+
+  DeleteCategory({required this.category});
+}
