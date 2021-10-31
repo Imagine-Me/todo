@@ -40,7 +40,7 @@ LazyDatabase _openConnection() {
 
 @DriftDatabase(tables: [Todos, Categories, Users])
 class TodoTable extends _$TodoTable {
-  TodoTable() : super(_openConnection());
+  TodoTable({QueryExecutor? e}) : super(e ?? _openConnection());
 
   @override
   int get schemaVersion => 1;
