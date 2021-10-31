@@ -33,11 +33,6 @@ void main() {
     _categoryBloc = CategoryBloc();
     todoBloc = TodoBloc(categoryBloc: _categoryBloc);
   });
-  tearDown(() async {
-    // _categoryBloc.close();
-
-    await todoBloc.close();
-  });
 
   // testWidgets('home screen', (WidgetTester tester) async {
   //   await tester.pumpWidget(makeHomeScreen());
