@@ -6,7 +6,7 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(UserInitial()) {
+  UserBloc() : super(const UserInitial()) {
     on<GetUser>((event, emit) async {
       final List<User> users = await database.getUsers();
       if (users.isNotEmpty) {
