@@ -21,7 +21,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   TodoBloc({required this.categoryBloc})
       : super(TodoInitial(categoryState: CategoryState())) {
     on<GetTodo>((event, emit) {
-      print('TODO TABLE CHANGED, EMITING NEW STATE');
       emit(TodoLoaded(
         todos: event.todos,
         categoryState: _categoryState,
@@ -29,15 +28,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       ));
     });
     on<AddTodo>((event, _) {
-      print('ADDING NEW TODO');
       database.addTodo(event.todosCompanion);
     });
     on<ToggleCompletedTodo>((event, _) {
-      print('TOGGLING CHECKBOX');
       database.toggleCompleted(event.todosCompanion);
     });
     on<FilterTodo>((event, emit) {
-      print('Filtering the todo');
       _category = event.category;
       final newState = TodoLoaded(
           categoryState: _categoryState,
@@ -46,7 +42,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       emit(newState);
     });
     on<DeleteTodo>((event, _) {
-      print('DELETING TODO');
       database.deleteTodo(event.todosCompanion);
     });
     subscribeTodoTable();

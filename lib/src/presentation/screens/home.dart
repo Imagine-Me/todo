@@ -107,8 +107,6 @@ class HomeScreen extends StatelessWidget {
   }
 
   onFloatingActionButtonPressed(context, TodosCompanion? todosCompanion) {
-    final categories =
-        BlocProvider.of<TodoBloc>(context).state.categoryState.categories;
 
     showModalBottomSheet(
       context: context,
@@ -118,7 +116,6 @@ class HomeScreen extends StatelessWidget {
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
         return TodoForm(
-          categories: categories,
           todosCompanion: todosCompanion,
         );
       },
@@ -218,6 +215,7 @@ class HomeScreen extends StatelessWidget {
                   return todoEmpty(context);
                 }
                 return ListView.builder(
+                  key: const Key('todo_list'),
                   itemCount: state.todoCard.length,
                   itemBuilder: (context, index) {
                     return Dismissible(
