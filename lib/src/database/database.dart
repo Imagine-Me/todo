@@ -75,7 +75,7 @@ class TodoTable extends _$TodoTable {
   Stream<List<Category>> watchCategories() {
     return (select(categories)
           ..orderBy(
-              [(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)]))
+              [(t) => OrderingTerm.desc(t.id)]))
         .watch();
   }
 
