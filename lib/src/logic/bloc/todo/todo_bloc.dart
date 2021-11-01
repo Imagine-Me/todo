@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/category_bloc.dart';
+import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:todo/src/logic/model/catergory_model.dart';
 import 'package:todo/src/logic/model/todo_model.dart';
 

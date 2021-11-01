@@ -2,7 +2,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/user_bloc.dart';
+import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 
 class InitialScreen extends StatefulWidget {
   const InitialScreen({Key? key}) : super(key: key);

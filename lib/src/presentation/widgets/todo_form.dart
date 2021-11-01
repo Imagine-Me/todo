@@ -2,7 +2,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/todo_bloc.dart';
+import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 
 class TodoForm extends StatefulWidget {
   const TodoForm({Key? key, this.todosCompanion})

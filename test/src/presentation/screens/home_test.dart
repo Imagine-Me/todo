@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/category_bloc.dart';
-import 'package:todo/src/logic/bloc/todo_bloc.dart';
-import 'package:todo/src/logic/bloc/user_bloc.dart';
+import 'package:todo/src/logic/bloc/category/category_bloc.dart';
+import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
+import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 import 'package:todo/src/presentation/screens/home.dart';
 import 'package:path/path.dart' as p;
 
@@ -41,17 +41,12 @@ void main() {
     todoBloc = TodoBloc(categoryBloc: _categoryBloc);
   });
   tearDownAll(() async {
-    print('Tearing down the tests...');
+    print('TEARING DOWN THE TESTS...');
     final directory = await getApplicationDocumentsDirectory();
     final file = File(p.join(directory.path, 'db.sqlite'));
     await file.delete();
   });
 
-  addInitialCategory() {
-    _categoryBloc.add(AddCategory(
-        category: const CategoriesCompanion(
-            category: Value('office'), color: Value('0xff00000'))));
-  }
 
   testWidgets('home screen', (WidgetTester tester) async {
     await tester.runAsync(() async {
