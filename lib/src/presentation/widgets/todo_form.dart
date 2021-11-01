@@ -5,11 +5,10 @@ import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo_bloc.dart';
 
 class TodoForm extends StatefulWidget {
-  const TodoForm({Key? key, required this.categories, this.todosCompanion})
+  const TodoForm({Key? key, this.todosCompanion})
       : super(key: key);
 
   final TodosCompanion? todosCompanion;
-  final List<Category> categories;
 
   @override
   State<TodoForm> createState() => _TodoFormState();
@@ -83,6 +82,7 @@ class _TodoFormState extends State<TodoForm> {
               child: Column(
                 children: [
                   TextFormField(
+                    key: const Key('todo_form_title'),
                     controller: titleTextController,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
@@ -113,47 +113,53 @@ class _TodoFormState extends State<TodoForm> {
                   ),
                   SizedBox(
                     width: double.infinity,
-                    child: DropdownButtonFormField(
-                      value: selectedCategory,
-                      validator: (int? val) {
-                        if (val == null) {
-                          return 'Please select category';
-                        }
-                        return null;
-                      },
-                      hint: const Text('Select a category'),
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      items: widget.categories
-                          .map((e) => DropdownMenuItem(
-                                value: e.id,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 20,
-                                      height: 20,
-                                      color: Color(int.parse(e.color)),
+                    child: BlocBuilder<TodoBloc, TodoState>(
+                      builder: (context, state) {
+                        return DropdownButtonFormField(
+                          key: const Key('todo_form_category'),
+                          value: selectedCategory,
+                          validator: (int? val) {
+                            if (val == null) {
+                              return 'Please select category';
+                            }
+                            return null;
+                          },
+                          hint: const Text('Select a category'),
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                          ),
+                          items: state.categoryState.categories
+                              .map((e) => DropdownMenuItem(
+                                    value: e.id,
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 20,
+                                          height: 20,
+                                          color: Color(int.parse(e.color)),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(e.category)
+                                      ],
                                     ),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(e.category)
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (int? val) {
-                        setState(() {
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          selectedCategory = val;
-                        });
+                                  ))
+                              .toList(),
+                          onChanged: (int? val) {
+                            setState(() {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              selectedCategory = val;
+                            });
+                          },
+                        );
                       },
                     ),
                   ),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      key: const Key('todo_form_submit_button'),
                       onPressed: () => onSubmitForm(),
                       child: widget.todosCompanion == null
                           ? const Text('Create')
