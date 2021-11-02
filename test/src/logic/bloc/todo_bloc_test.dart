@@ -38,9 +38,10 @@ void main() {
               category: Value(1), title: Value('first todo'))),
     ),
     expect: () => [
-      TodoLoaded(
-          categoryState: categoryBloc.state,
-          todos: [Todo(id: 1, title: 'first todo', isCompleted: false)])
+      TodoLoaded(todos: [], categoryState: categoryBloc.state),
+      TodoLoaded(categoryState: categoryBloc.state, todos: [
+        Todo(id: 1, title: 'first todo', isCompleted: false, remindAt: null)
+      ])
     ],
   );
 
@@ -53,6 +54,9 @@ void main() {
               category: Value(2), title: Value('second todo'))),
     ),
     expect: () => [
+      TodoLoaded(
+          categoryState: categoryBloc.state,
+          todos: [Todo(id: 1, title: 'first todo', isCompleted: false)]),
       TodoLoaded(categoryState: categoryBloc.state, todos: [
         Todo(id: 2, title: 'second todo', isCompleted: false),
         Todo(id: 1, title: 'first todo', isCompleted: false)
@@ -73,8 +77,12 @@ void main() {
       expect: () => [
             TodoLoaded(categoryState: categoryBloc.state, todos: [
               Todo(id: 2, title: 'second todo', isCompleted: false),
+              Todo(id: 1, title: 'first todo', isCompleted: false)
+            ]),
+            TodoLoaded(categoryState: categoryBloc.state, todos: [
+              Todo(id: 2, title: 'second todo', isCompleted: false),
               Todo(id: 1, title: 'first todo', isCompleted: true)
-            ])
+            ]),
           ]);
 
   blocTest('delete todo',
@@ -83,8 +91,12 @@ void main() {
             DeleteTodo(todosCompanion: const TodosCompanion(id: Value(2))),
           ),
       expect: () => [
+            TodoLoaded(categoryState: categoryBloc.state, todos: [
+              Todo(id: 2, title: 'second todo', isCompleted: false),
+              Todo(id: 1, title: 'first todo', isCompleted: true)
+            ]),
             TodoLoaded(
                 categoryState: categoryBloc.state,
-                todos: [Todo(id: 1, title: 'first todo', isCompleted: true)])
+                todos: [Todo(id: 1, title: 'first todo', isCompleted: true)]),
           ]);
 }

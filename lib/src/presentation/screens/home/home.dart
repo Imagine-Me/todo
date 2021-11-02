@@ -83,12 +83,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   onTodoTap(Todo entity, context) {
-    final TodosCompanion todosCompanion = TodosCompanion(
-      id: drift.Value(entity.id),
-      title: drift.Value(entity.title),
-      category: drift.Value(entity.category),
-    );
-    onFloatingActionButtonPressed(context, todosCompanion);
+    onFloatingActionButtonPressed(context, entity.toCompanion(true));
   }
 
   @override
@@ -159,7 +154,9 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingButton: FloatingButton(onFloatingActionButtonPressed: onFloatingActionButtonPressed,),
+      floatingButton: FloatingButton(
+        onFloatingActionButtonPressed: onFloatingActionButtonPressed,
+      ),
     );
   }
 }

@@ -1,1 +1,1 @@
-enum Days { one, two, three }
+enum SnackBarType { success, error, info, primary }

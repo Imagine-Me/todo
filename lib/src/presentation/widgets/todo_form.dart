@@ -1,9 +1,13 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
+import 'package:todo/src/presentation/widgets/snackbar.dart';
 import 'package:todo/src/presentation/widgets/todo_remind_alert.dart';
+import 'package:todo/src/resources/utils.dart';
 
 class TodoForm extends StatefulWidget {
   const TodoForm({Key? key, this.todosCompanion}) : super(key: key);
@@ -28,50 +32,66 @@ class _TodoFormState extends State<TodoForm> {
       titleTextController =
           TextEditingController(text: widget.todosCompanion!.title.value);
       selectedCategory = widget.todosCompanion!.category.value;
+      final DateTime? remindAt = widget.todosCompanion!.remindAt.value;
+      if (remindAt != null) {
+        final int days =
+            daysBetween(widget.todosCompanion!.isCreatedAt.value!, remindAt);
+        setState(() {
+          remindMeDate = getInitialRemind(days, remindAt);
+        });
+      }
     } else {
       titleTextController = TextEditingController();
     }
   }
 
+  Map<String, DateTime> getInitialRemind(int days, DateTime date) {
+    switch (days) {
+      case 1:
+        return {'Remind me in 1 day': date};
+      case 2:
+        return {'Remind me in 2 days': date};
+      case 3:
+        return {'Remind me in 3 days': date};
+      default:
+        return {'Remind me on ${DateFormat('yyyy-MM-dd').format(date)}': date};
+    }
+  }
+
+  TodosCompanion getTodosCompanion() {
+    TodosCompanion todosCompanion = TodosCompanion(
+      category: drift.Value(selectedCategory),
+      title: drift.Value(titleTextController.text),
+      remindAt: remindMeDate == null
+          ? const drift.Value.absent()
+          : drift.Value(remindMeDate![remindMeDate!.keys.first]),
+      isCreatedAt: drift.Value(DateTime.now().toUtc()),
+    );
+
+    if (widget.todosCompanion != null) {
+      todosCompanion = todosCompanion.copyWith(
+          id: widget.todosCompanion!.id,
+          isCreatedAt: widget.todosCompanion!.isCreatedAt);
+    }
+
+    return todosCompanion;
+  }
+
   onSubmitForm() {
     if (_formKey.currentState!.validate()) {
-      final TodosCompanion todosCompanion = TodosCompanion(
-        id: widget.todosCompanion == null
-            ? const drift.Value.absent()
-            : widget.todosCompanion!.id,
-        category: drift.Value(selectedCategory),
-        title: drift.Value(titleTextController.text),
-        isCreatedAt: widget.todosCompanion == null
-            ? drift.Value(DateTime.now().toUtc())
-            : widget.todosCompanion!.isCreatedAt,
-      );
       BlocProvider.of<TodoBloc>(context)
-          .add(AddTodo(todosCompanion: todosCompanion));
+          .add(AddTodo(todosCompanion: getTodosCompanion()));
       Navigator.of(context).pop();
       if (widget.todosCompanion != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content:
-                Text('Todo Updated', style: TextStyle(color: Colors.black)),
-            duration: Duration(milliseconds: 800),
-            backgroundColor: Colors.yellowAccent,
-          ),
-        );
+        showCustomSnackbar(context, 'Todo Updated', SnackBarType.primary);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Todo Added',
-            ),
-            duration: Duration(milliseconds: 800),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
+        showCustomSnackbar(context, 'Todo Added', SnackBarType.success);
       }
     }
   }
 
-  void selectRemindMeDate(Map<String,DateTime>? dateTime) {
+  void selectRemindMeDate(Map<String, DateTime>? dateTime) {
+    FocusScope.of(context).requestFocus(FocusNode());
     setState(() {
       remindMeDate = dateTime;
     });
@@ -123,7 +143,9 @@ class _TodoFormState extends State<TodoForm> {
                           borderRadius: BorderRadius.circular(5)),
                       child: Align(
                           alignment: Alignment.centerLeft,
-                          child: remindMeDate==null ? const Text('Remind me') : Text(remindMeDate!.keys.last)),
+                          child: remindMeDate == null
+                              ? const Text('Remind me')
+                              : Text(remindMeDate!.keys.last)),
                     ),
                   ),
                   const SizedBox(
