@@ -1,1 +1,1 @@
-enum CategoryEnum { Loaded }
+enum Days { one, two, three }

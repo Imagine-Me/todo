@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
+import 'package:todo/src/presentation/widgets/todo_remind_alert.dart';
 
 class TodoForm extends StatefulWidget {
   const TodoForm({Key? key, this.todosCompanion}) : super(key: key);
@@ -16,6 +17,8 @@ class TodoForm extends StatefulWidget {
 class _TodoFormState extends State<TodoForm> {
   late final TextEditingController titleTextController;
   final _formKey = GlobalKey<FormState>();
+
+  Map<String, DateTime>? remindMeDate;
 
   int? selectedCategory;
   @override
@@ -39,8 +42,8 @@ class _TodoFormState extends State<TodoForm> {
         category: drift.Value(selectedCategory),
         title: drift.Value(titleTextController.text),
         isCreatedAt: widget.todosCompanion == null
-              ? drift.Value(DateTime.now().toUtc())
-              : widget.todosCompanion!.isCreatedAt,
+            ? drift.Value(DateTime.now().toUtc())
+            : widget.todosCompanion!.isCreatedAt,
       );
       BlocProvider.of<TodoBloc>(context)
           .add(AddTodo(todosCompanion: todosCompanion));
@@ -68,6 +71,12 @@ class _TodoFormState extends State<TodoForm> {
     }
   }
 
+  void selectRemindMeDate(Map<String,DateTime>? dateTime) {
+    setState(() {
+      remindMeDate = dateTime;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Wrap(children: [
@@ -78,6 +87,7 @@ class _TodoFormState extends State<TodoForm> {
           child: Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextFormField(
                     key: const Key('todo_form_title'),
@@ -93,6 +103,28 @@ class _TodoFormState extends State<TodoForm> {
                       }
                       return null;
                     },
+                  ),
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) => RemindMeAlert(
+                                onRemindFormSubmit: selectRemindMeDate,
+                              ));
+                    },
+                    child: Container(
+                      height: 60,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: remindMeDate==null ? const Text('Remind me') : Text(remindMeDate!.keys.last)),
+                    ),
                   ),
                   const SizedBox(
                     height: 15,
