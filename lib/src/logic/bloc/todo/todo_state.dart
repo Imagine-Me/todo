@@ -70,8 +70,21 @@ class TodoInitial extends TodoState {
       : super(categoryState: categoryState);
 }
 
-class TodoLoaded extends TodoState {
+class TodoLoaded extends TodoState with EquatableMixin {
   const TodoLoaded(
-      {required CategoryState categoryState, int? category, required List<Todo> todos})
+      {required CategoryState categoryState,
+      int? category,
+      required List<Todo> todos})
       : super(categoryState: categoryState, category: category, todos: todos);
+
+  @override
+  List<Object?> get props => todos.isEmpty
+      ? [todos]
+      : [
+          ...todos.map((e) => e.title).toList(),
+          ...todos.map((e) => e.isCompleted).toList()
+        ];
+
+  @override
+  bool? get stringify => true;
 }
