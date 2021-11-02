@@ -2,8 +2,8 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/todo_bloc.dart';
-import 'package:todo/src/logic/bloc/user_bloc.dart';
+import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
+import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
@@ -107,9 +107,6 @@ class HomeScreen extends StatelessWidget {
   }
 
   onFloatingActionButtonPressed(context, TodosCompanion? todosCompanion) {
-    final categories =
-        BlocProvider.of<TodoBloc>(context).state.categoryState.categories;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -118,7 +115,6 @@ class HomeScreen extends StatelessWidget {
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
         return TodoForm(
-          categories: categories,
           todosCompanion: todosCompanion,
         );
       },
@@ -197,51 +193,56 @@ class HomeScreen extends StatelessWidget {
           ...topSection(),
           SizedBox(
             height: 110,
-            child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
-              return ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: state.categoryCard.length,
-                itemBuilder: (context, index) {
-                  return CardHome(categoryModel: state.categoryCard[index]);
-                },
-              );
-            }),
+            child: BlocBuilder<TodoBloc, TodoState>(
+              builder: (context, state) {
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.categoryCard.length,
+                  itemBuilder: (context, index) {
+                    return CardHome(categoryModel: state.categoryCard[index]);
+                  },
+                );
+              },
+            ),
           ),
           ...middleSection(),
           Expanded(
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
               if (state is TodoLoaded) {
-                if (state.categoryState.categories.isEmpty) {
-                  return addCategory(context);
-                }
-                if (state.todos.isEmpty) {
+                if (state.todos.isNotEmpty) {
+                  return ListView.builder(
+                    key: const Key('todo_list'),
+                    itemCount: state.todoCard.length,
+                    itemBuilder: (context, index) {
+                      return Dismissible(
+                        key: UniqueKey(),
+                        direction: state.todos[index].isCompleted
+                            ? DismissDirection.horizontal
+                            : DismissDirection.endToStart,
+                        background: Container(color: Colors.greenAccent),
+                        secondaryBackground: Container(
+                          color: Colors.redAccent,
+                        ),
+                        child: TodoCard(
+                          todoModel: state.todoCard[index],
+                          onTapHandler: () =>
+                              onTodoTap(state.todos[index], context),
+                          checkBoxHandler: (bool? val) =>
+                              onCheckBoxClickHandler(
+                                  val, state.todos[index], context),
+                        ),
+                        onDismissed: (DismissDirection direction) =>
+                            onTodoDismissed(
+                                direction, state.todos[index], context),
+                      );
+                    },
+                  );
+                } else {
+                  if (state.categoryState.categories.isEmpty) {
+                    return addCategory(context);
+                  }
                   return todoEmpty(context);
                 }
-                return ListView.builder(
-                  itemCount: state.todoCard.length,
-                  itemBuilder: (context, index) {
-                    return Dismissible(
-                      key: UniqueKey(),
-                      direction: state.todos[index].isCompleted
-                          ? DismissDirection.horizontal
-                          : DismissDirection.endToStart,
-                      background: Container(color: Colors.greenAccent),
-                      secondaryBackground: Container(
-                        color: Colors.redAccent,
-                      ),
-                      child: TodoCard(
-                        todoModel: state.todoCard[index],
-                        onTapHandler: () =>
-                            onTodoTap(state.todos[index], context),
-                        checkBoxHandler: (bool? val) => onCheckBoxClickHandler(
-                            val, state.todos[index], context),
-                      ),
-                      onDismissed: (DismissDirection direction) =>
-                          onTodoDismissed(
-                              direction, state.todos[index], context),
-                    );
-                  },
-                );
               } else {
                 return const Center(
                   child: Text('Loading....'),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:todo/src/database/database.dart';
 
@@ -12,16 +13,13 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
   CategoryBloc() : super(CategoryState()) {
     on<GetCategory>((event, emit) {
-      print('CATEGORY TABLE CHANGED, EMITING NEW STATE');
       emit(CategoryState(categories: event.categories));
     });
     on<AddCategory>((event, _) {
-      print('NEW CATEGORY IS ADDED');
       database.addCategory(event.category);
     });
 
     on<DeleteCategory>((event, _) {
-      print('CATEGORY DELETED');
       database.deleteCategory(event.category);
     });
     subscribeCategoryTable();

@@ -40,7 +40,7 @@ LazyDatabase _openConnection() {
 
 @DriftDatabase(tables: [Todos, Categories, Users])
 class TodoTable extends _$TodoTable {
-  TodoTable() : super(_openConnection());
+  TodoTable({QueryExecutor? e}) : super(e ?? _openConnection());
 
   @override
   int get schemaVersion => 1;
@@ -75,7 +75,7 @@ class TodoTable extends _$TodoTable {
   Stream<List<Category>> watchCategories() {
     return (select(categories)
           ..orderBy(
-              [(t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc)]))
+              [(t) => OrderingTerm.desc(t.id)]))
         .watch();
   }
 

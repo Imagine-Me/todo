@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo/src/logic/bloc/user_bloc.dart';
+import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 import 'package:todo/src/presentation/routes/todo_router.dart';
 
 import 'package:todo/src/presentation/widgets/app_bar.dart' as custom_app_bar;

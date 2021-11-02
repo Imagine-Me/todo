@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo/src/logic/bloc/category_bloc.dart';
-import 'package:todo/src/logic/bloc/todo_bloc.dart';
-import 'package:todo/src/logic/bloc/user_bloc.dart';
+import 'package:todo/src/logic/bloc/category/category_bloc.dart';
+import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
+import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 import 'package:todo/src/presentation/routes/todo_router.dart';
 import 'package:todo/src/presentation/theme/theme.dart';
 

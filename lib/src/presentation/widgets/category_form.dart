@@ -2,7 +2,7 @@ import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
-import 'package:todo/src/logic/bloc/category_bloc.dart';
+import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 
 class CategoryForm extends StatefulWidget {
   const CategoryForm({Key? key, this.categoriesCompanion}) : super(key: key);

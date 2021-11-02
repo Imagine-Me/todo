@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo/src/logic/bloc/todo_bloc.dart';
+import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 import 'package:todo/src/logic/model/catergory_model.dart';
 
 class CardHome extends StatelessWidget {
