@@ -9,7 +9,7 @@ import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 import 'package:todo/src/logic/bloc/user/user_bloc.dart';
-import 'package:todo/src/presentation/screens/home.dart';
+import 'package:todo/src/presentation/screens/home/home.dart';
 import 'package:path/path.dart' as p;
 
 void main() {

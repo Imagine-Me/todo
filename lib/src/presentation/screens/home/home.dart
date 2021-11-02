@@ -3,108 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
-import 'package:todo/src/logic/bloc/user/user_bloc.dart';
+import 'package:todo/src/presentation/screens/home/components/add_category.dart';
+import 'package:todo/src/presentation/screens/home/components/floating_button.dart';
+import 'package:todo/src/presentation/screens/home/components/todo_empty.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
 import 'package:todo/src/presentation/widgets/todo_form.dart';
 
+import 'components/sections.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  Widget floatingButton() {
-    return Builder(builder: (context) {
-      return FloatingActionButton(
-        onPressed: () => onFloatingActionButtonPressed(context, null),
-        child: const Icon(Icons.add),
-      );
-    });
-  }
-
-  Widget addCategory(context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'No Categories added, Add now',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/category');
-            },
-            icon: const Icon(Icons.add),
-            label: const Text('Create Category'),
-            style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 25)),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget todoEmpty(context) {
-    return Center(
-      child: Text(
-        'Wow, such empty!',
-        style: Theme.of(context).textTheme.headline3,
-      ),
-    );
-  }
-
-  List<Widget> topSection() {
-    return [
-      BlocBuilder<UserBloc, UserState>(
-        builder: (context, state) {
-          return Text(
-            'Hi ${state.name}',
-            style: Theme.of(context).textTheme.headline2,
-          );
-        },
-      ),
-      const SizedBox(
-        height: 10,
-      ),
-      Builder(builder: (context) {
-        return Text(
-          'CATEGORIES',
-          style: Theme.of(context).textTheme.headline5,
-        );
-      }),
-      const SizedBox(
-        height: 10,
-      )
-    ];
-  }
-
-  List<Widget> middleSection() {
-    return [
-      const SizedBox(
-        height: 10,
-      ),
-      BlocBuilder<TodoBloc, TodoState>(
-        builder: (context, state) {
-          String filterString = '';
-          if (state.categoryName != null) {
-            filterString += '( Category: ${state.categoryName} )';
-          }
-          return Text(
-            'TODOS $filterString',
-            style: Theme.of(context).textTheme.headline5,
-          );
-        },
-      ),
-      const SizedBox(
-        height: 5,
-      ),
-    ];
-  }
 
   onFloatingActionButtonPressed(context, TodosCompanion? todosCompanion) {
     showModalBottomSheet(
@@ -236,9 +146,9 @@ class HomeScreen extends StatelessWidget {
                   );
                 } else {
                   if (state.categoryState.categories.isEmpty) {
-                    return addCategory(context);
+                    return const AddCategory();
                   }
-                  return todoEmpty(context);
+                  return const TodoEmpty();
                 }
               } else {
                 return const Center(
@@ -249,7 +159,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingButton: floatingButton(),
+      floatingButton: FloatingButton(onFloatingActionButtonPressed: onFloatingActionButtonPressed,),
     );
   }
 }

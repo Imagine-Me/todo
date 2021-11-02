@@ -13,7 +13,6 @@ part 'todo_state.dart';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final CategoryBloc categoryBloc;
-  late final StreamSubscription<List<Todo>> tableStream;
   late final StreamSubscription categoryStream;
 
   CategoryState _categoryState = CategoryState();
@@ -54,12 +53,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     subscribeCategory();
   }
 
-  StreamSubscription<List<Todo>> subscribeTodoTable() {
-    return tableStream = database.watchTodos().listen((event) {
-      add(GetTodo(todos: event));
-    });
-  }
-
   Future<void> getTodos() async {
     final List<Todo> todos = await database.getTodos();
     add(GetTodo(todos: todos));
@@ -76,7 +69,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   @override
   Future<void> close() {
-    tableStream.cancel();
     categoryStream.cancel();
     return super.close();
   }
