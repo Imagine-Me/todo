@@ -133,6 +133,7 @@ class _TodoFormState extends State<TodoForm> {
                           context: context,
                           builder: (_) => RemindMeAlert(
                                 onRemindFormSubmit: selectRemindMeDate,
+                                selectedRemindMe: remindMeDate,
                               ));
                     },
                     child: Container(
