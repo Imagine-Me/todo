@@ -10,9 +10,10 @@ part 'database.g.dart';
 class Todos extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get title => text()();
-  TextColumn get content => text().nullable()();
   IntColumn get category => integer().nullable()();
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get remindAt => dateTime().nullable()();
+  DateTimeColumn get isCreatedAt => dateTime().nullable()();
 }
 
 @DataClassName('Category')

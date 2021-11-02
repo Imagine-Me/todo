@@ -26,8 +26,7 @@ abstract class TodoState {
         .map((e) => TodoModel(
             title: e.title,
             color: categoryState.colors[e.category] ?? '0xff000000',
-            isCompleted: e.isCompleted,
-            content: e.content))
+            isCompleted: e.isCompleted,))
         .toList();
   }
 

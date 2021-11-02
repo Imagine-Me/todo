@@ -125,7 +125,6 @@ class HomeScreen extends StatelessWidget {
     final TodosCompanion todosCompanion = TodosCompanion(
       id: drift.Value(entity.id),
       title: drift.Value(entity.title),
-      content: drift.Value(entity.content),
       isCompleted: drift.Value(val ?? false),
       category: drift.Value(entity.category),
     );
@@ -150,7 +149,6 @@ class HomeScreen extends StatelessWidget {
         final TodosCompanion todosCompanion = TodosCompanion(
           id: drift.Value(entity.id),
           title: drift.Value(entity.title),
-          content: drift.Value(entity.content),
           isCompleted: drift.Value(entity.isCompleted),
           category: drift.Value(entity.category),
         );
@@ -178,7 +176,6 @@ class HomeScreen extends StatelessWidget {
     final TodosCompanion todosCompanion = TodosCompanion(
       id: drift.Value(entity.id),
       title: drift.Value(entity.title),
-      content: drift.Value(entity.content),
       category: drift.Value(entity.category),
     );
     onFloatingActionButtonPressed(context, todosCompanion);

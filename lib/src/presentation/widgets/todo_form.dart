@@ -16,7 +16,6 @@ class TodoForm extends StatefulWidget {
 
 class _TodoFormState extends State<TodoForm> {
   late final TextEditingController titleTextController;
-  late final TextEditingController contentTextController;
   final _formKey = GlobalKey<FormState>();
 
   int? selectedCategory;
@@ -26,12 +25,9 @@ class _TodoFormState extends State<TodoForm> {
     if (widget.todosCompanion != null) {
       titleTextController =
           TextEditingController(text: widget.todosCompanion!.title.value);
-      contentTextController =
-          TextEditingController(text: widget.todosCompanion!.content.value);
       selectedCategory = widget.todosCompanion!.category.value;
     } else {
       titleTextController = TextEditingController();
-      contentTextController = TextEditingController();
     }
   }
 
@@ -42,7 +38,6 @@ class _TodoFormState extends State<TodoForm> {
               ? const drift.Value.absent()
               : widget.todosCompanion!.id,
           category: drift.Value(selectedCategory),
-          content: drift.Value(contentTextController.text),
           title: drift.Value(titleTextController.text));
       BlocProvider.of<TodoBloc>(context)
           .add(AddTodo(todosCompanion: todosCompanion));
@@ -87,11 +82,11 @@ class _TodoFormState extends State<TodoForm> {
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Enter Title',
+                      hintText: 'Enter Task',
                     ),
                     validator: (String? value) {
                       if (value == null || value == '') {
-                        return 'Enter a title';
+                        return 'Enter a task';
                       }
                       return null;
                     },
@@ -99,18 +94,7 @@ class _TodoFormState extends State<TodoForm> {
                   const SizedBox(
                     height: 15,
                   ),
-                  TextFormField(
-                    controller: contentTextController,
-                    textCapitalization: TextCapitalization.sentences,
-                    maxLines: 3,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter Content',
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
+                  
                   SizedBox(
                     width: double.infinity,
                     child: BlocBuilder<TodoBloc, TodoState>(
@@ -176,7 +160,6 @@ class _TodoFormState extends State<TodoForm> {
   @override
   void dispose() {
     titleTextController.dispose();
-    contentTextController.dispose();
     super.dispose();
   }
 }
