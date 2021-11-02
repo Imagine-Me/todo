@@ -16,6 +16,7 @@ class CategoryState extends Equatable {
       {for (Category category in categories) category.id: category.color};
 
   @override
-  List<Object?> get props =>
-      categories.isEmpty ? [categories] : [categories[0].category];
+  List<Object?> get props => categories.isEmpty
+      ? [categories]
+      : [categories[0].category, categories[0].id, categories[0].color];
 }

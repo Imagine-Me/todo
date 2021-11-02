@@ -79,10 +79,12 @@ class TodoLoaded extends TodoState with EquatableMixin {
 
   @override
   List<Object?> get props => todos.isEmpty
-      ? [todos]
+      ? [todos, categoryState]
       : [
           ...todos.map((e) => e.title).toList(),
-          ...todos.map((e) => e.isCompleted).toList()
+          ...todos.map((e) => e.isCompleted).toList(),
+          ...todos.map((e) => e.id).toList(),
+          categoryState
         ];
 
   @override

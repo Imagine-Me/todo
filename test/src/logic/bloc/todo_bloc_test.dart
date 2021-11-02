@@ -54,7 +54,7 @@ void main() {
     ),
     expect: () => [
       TodoLoaded(categoryState: categoryBloc.state, todos: [
-        Todo(id: 1, title: 'second todo', isCompleted: false),
+        Todo(id: 2, title: 'second todo', isCompleted: false),
         Todo(id: 1, title: 'first todo', isCompleted: false)
       ])
     ],
@@ -72,7 +72,7 @@ void main() {
           ),
       expect: () => [
             TodoLoaded(categoryState: categoryBloc.state, todos: [
-              Todo(id: 1, title: 'second todo', isCompleted: false),
+              Todo(id: 2, title: 'second todo', isCompleted: false),
               Todo(id: 1, title: 'first todo', isCompleted: true)
             ])
           ]);

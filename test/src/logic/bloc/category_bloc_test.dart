@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:todo/src/database/database.dart' as db;
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:path/path.dart' as p;
-import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 
 void main() {
   late CategoryBloc categoryBloc;
@@ -49,7 +48,7 @@ void main() {
         CategoryState(categories: const []),
         CategoryState(
           categories: [
-            db.Category(id: 1, category: 'office', color: '0xff0000')
+            db.Category(id: 1, category: 'office', color: '0xff00000')
           ],
         ),
       ],
@@ -62,7 +61,7 @@ void main() {
         expect: () => [
               CategoryState(
                 categories: [
-                  db.Category(id: 1, category: 'office', color: '0xff0000')
+                  db.Category(id: 1, category: 'office', color: '0xff00000')
                 ],
               ),
               CategoryState(categories: const []),
