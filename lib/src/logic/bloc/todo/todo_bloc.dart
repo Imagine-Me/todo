@@ -22,17 +22,20 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   TodoBloc({required this.categoryBloc})
       : super(TodoInitial(categoryState: CategoryState())) {
     on<GetTodo>((event, emit) {
+      print('EMITING TODO ${event.todos}');
       emit(TodoLoaded(
         todos: event.todos,
         categoryState: _categoryState,
         category: _category,
       ));
     });
-    on<AddTodo>((event, _) {
-      database.addTodo(event.todosCompanion);
+    on<AddTodo>((event, _) async {
+      await database.addTodo(event.todosCompanion);
+      getTodos();
     });
-    on<ToggleCompletedTodo>((event, _) {
-      database.toggleCompleted(event.todosCompanion);
+    on<ToggleCompletedTodo>((event, _) async {
+      await database.toggleCompleted(event.todosCompanion);
+      getTodos();
     });
     on<FilterTodo>((event, emit) {
       _category = event.category;
@@ -42,10 +45,12 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           category: event.category);
       emit(newState);
     });
-    on<DeleteTodo>((event, _) {
-      database.deleteTodo(event.todosCompanion);
+    on<DeleteTodo>((event, _) async {
+      await database.deleteTodo(event.todosCompanion);
+      getTodos();
     });
-    subscribeTodoTable();
+    // subscribeTodoTable();
+    getTodos();
     subscribeCategory();
   }
 
@@ -53,6 +58,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     return tableStream = database.watchTodos().listen((event) {
       add(GetTodo(todos: event));
     });
+  }
+
+  Future<void> getTodos() async {
+    final List<Todo> todos = await database.getTodos();
+    add(GetTodo(todos: todos));
   }
 
   void subscribeCategory() {

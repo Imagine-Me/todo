@@ -60,6 +60,10 @@ class TodoTable extends _$TodoTable {
     return (select(todos)..orderBy([(t) => OrderingTerm.desc(t.id)])).watch();
   }
 
+  Future<List<Todo>> getTodos() {
+    return (select(todos)..orderBy([(t) => OrderingTerm.desc(t.id)])).get();
+  }
+
   Future<int> addTodo(TodosCompanion entity) {
     return into(todos).insertOnConflictUpdate(entity);
   }
@@ -74,9 +78,7 @@ class TodoTable extends _$TodoTable {
 
   //! CATEGORY TABLE
   Stream<List<Category>> watchCategories() {
-    return (select(categories)
-          ..orderBy(
-              [(t) => OrderingTerm.desc(t.id)]))
+    return (select(categories)..orderBy([(t) => OrderingTerm.desc(t.id)]))
         .watch();
   }
 

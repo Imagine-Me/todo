@@ -5,8 +5,7 @@ import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 
 class TodoForm extends StatefulWidget {
-  const TodoForm({Key? key, this.todosCompanion})
-      : super(key: key);
+  const TodoForm({Key? key, this.todosCompanion}) : super(key: key);
 
   final TodosCompanion? todosCompanion;
 
@@ -34,11 +33,15 @@ class _TodoFormState extends State<TodoForm> {
   onSubmitForm() {
     if (_formKey.currentState!.validate()) {
       final TodosCompanion todosCompanion = TodosCompanion(
-          id: widget.todosCompanion == null
-              ? const drift.Value.absent()
-              : widget.todosCompanion!.id,
-          category: drift.Value(selectedCategory),
-          title: drift.Value(titleTextController.text));
+        id: widget.todosCompanion == null
+            ? const drift.Value.absent()
+            : widget.todosCompanion!.id,
+        category: drift.Value(selectedCategory),
+        title: drift.Value(titleTextController.text),
+        isCreatedAt: widget.todosCompanion == null
+              ? drift.Value(DateTime.now().toUtc())
+              : widget.todosCompanion!.isCreatedAt,
+      );
       BlocProvider.of<TodoBloc>(context)
           .add(AddTodo(todosCompanion: todosCompanion));
       Navigator.of(context).pop();
@@ -94,7 +97,6 @@ class _TodoFormState extends State<TodoForm> {
                   const SizedBox(
                     height: 15,
                   ),
-                  
                   SizedBox(
                     width: double.infinity,
                     child: BlocBuilder<TodoBloc, TodoState>(
