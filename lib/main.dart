@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 import 'package:todo/src/presentation/routes/todo_router.dart';
 import 'package:todo/src/presentation/theme/theme.dart';
+import 'package:todo/src/resources/notification_helper.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final NotificationClass notificationClass = NotificationClass();
+  await notificationClass.initNotifications();
+
   runApp(MyApp(
     todoRouter: TodoRouter(),
   ));
