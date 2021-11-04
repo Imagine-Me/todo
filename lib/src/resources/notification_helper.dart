@@ -3,6 +3,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:todo/src/resources/utils.dart';
 
 class NotificationClass {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -19,7 +20,6 @@ class NotificationClass {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (String? payload) async {
       if (payload != null) {
-        print('NOTIFICATION PAYLOAD $payload');
         selectNotificationSubject.add(payload);
       }
     });
@@ -27,27 +27,37 @@ class NotificationClass {
 }
 
 Future<void> scheduleNotification(
-    {required String id,
+    {required int id,
     required String title,
     required String body,
     required DateTime scheduledTime}) async {
-  final AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails(id, 'ScheduledNotification',
-          channelDescription: 'Reminder of task', icon: 'todo_launcher');
+  const AndroidNotificationDetails androidNotificationDetails =
+      AndroidNotificationDetails(
+    'notification_4',
+    'ScheduledNotification',
+    channelDescription: 'Reminder of task',
+    icon: 'todo_launcher',
+    importance: Importance.max,
+    priority: Priority.high,
+    playSound: true,
+    sound: RawResourceAndroidNotificationSound('todo_notification'),
+  );
 
-  final NotificationDetails notificationDetails =
+  const NotificationDetails notificationDetails =
       NotificationDetails(android: androidNotificationDetails);
 
   tz.initializeTimeZones();
   tz.setLocalLocation(
       tz.getLocation(await FlutterNativeTimezone.getLocalTimezone()));
 
+  tz.TZDateTime time;
+  if (daysBetween(DateTime.now(), scheduledTime) == 0) {
+    time = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 15));
+  } else {
+    time = tz.TZDateTime.from(scheduledTime, tz.local);
+  }
   await NotificationClass.flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      title,
-      body,
-      tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-      notificationDetails,
+      id, title, body, time, notificationDetails,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true);

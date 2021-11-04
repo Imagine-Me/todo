@@ -63,7 +63,7 @@ class _TodoFormState extends State<TodoForm> {
       category: drift.Value(selectedCategory),
       title: drift.Value(titleTextController.text),
       remindAt: remindMeDate == null
-          ? const drift.Value.absent()
+          ? const drift.Value(null)
           : drift.Value(remindMeDate![remindMeDate!.keys.first]),
       isCreatedAt: drift.Value(DateTime.now().toUtc()),
     );
@@ -71,7 +71,8 @@ class _TodoFormState extends State<TodoForm> {
     if (widget.todosCompanion != null) {
       todosCompanion = todosCompanion.copyWith(
           id: widget.todosCompanion!.id,
-          isCreatedAt: widget.todosCompanion!.isCreatedAt);
+          isCreatedAt: widget.todosCompanion!.isCreatedAt,
+          notification: widget.todosCompanion!.notification);
     }
 
     return todosCompanion;

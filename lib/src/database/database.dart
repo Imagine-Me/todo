@@ -14,6 +14,7 @@ class Todos extends Table {
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
   DateTimeColumn get remindAt => dateTime().nullable()();
   DateTimeColumn get isCreatedAt => dateTime().nullable()();
+  IntColumn get notification => integer().nullable()();
 }
 
 @DataClassName('Category')
@@ -31,6 +32,13 @@ class Users extends Table {
   BoolColumn get showTodo => boolean().withDefault(const Constant(true))();
 }
 
+class Notifications extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get todo => text()();
+  IntColumn get category => integer().nullable()();
+  DateTimeColumn get remindAt => dateTime().nullable()();
+}
+
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
@@ -39,7 +47,7 @@ LazyDatabase _openConnection() {
   });
 }
 
-@DriftDatabase(tables: [Todos, Categories, Users])
+@DriftDatabase(tables: [Todos, Categories, Users, Notifications])
 class TodoTable extends _$TodoTable {
   TodoTable({QueryExecutor? e}) : super(e ?? _openConnection());
 
@@ -53,6 +61,25 @@ class TodoTable extends _$TodoTable {
 
   Future<int> addUser(UsersCompanion entity) {
     return into(users).insert(entity);
+  }
+
+  //! NOTIFICATION TABLE
+
+  Future<List<Notification>> getNotifications() {
+    return select(notifications).get();
+  }
+
+  Future<Notification> getNotification(int id) {
+    return (select(notifications)..where((tbl) => tbl.id.equals(id)))
+        .getSingle();
+  }
+
+  Future<int> addNotification(NotificationsCompanion entity) async {
+    return into(notifications).insertOnConflictUpdate(entity);
+  }
+
+  Future deleteNotification(NotificationsCompanion entity) async {
+    return (delete(notifications)..delete(entity)).go();
   }
 
   //! TODO TABLE
