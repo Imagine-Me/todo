@@ -19,7 +19,8 @@ class _InitialScreenState extends State<InitialScreen> {
     return BlocConsumer<UserBloc, UserState>(
       listener: (context, state) {
         if (state is UserLoaded) {
-          Navigator.of(context).popAndPushNamed('/');
+          print('Something happended');
+          Navigator.of(context).popAndPushNamed('/home');
         }
       },
       builder: (context, state) {
@@ -78,6 +79,8 @@ class FormWidget extends StatefulWidget {
 class _FormWidgetState extends State<FormWidget> {
   final _formKey = GlobalKey<FormState>();
   final nameTextEditingController = TextEditingController();
+
+
 
   onSubmitForm() {
     if (_formKey.currentState!.validate()) {

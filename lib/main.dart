@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Todo',
         theme: AppTheme.appTheme(),
-        initialRoute: '/initial',
+        initialRoute: '/',
         onGenerateRoute: todoRouter.onGenerateRoute,
       ),
     );
