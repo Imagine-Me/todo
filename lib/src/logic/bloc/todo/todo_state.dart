@@ -85,6 +85,7 @@ class TodoLoaded extends TodoState with EquatableMixin {
           ...todos.map((e) => e.id).toList(),
           ...todos.map((e) => e.remindAt).toList(),
           ...todos.map((e) => e.notification).toList(),
+          category,
           categoryState
         ];
 

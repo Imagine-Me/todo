@@ -9,10 +9,10 @@ class AddCategory extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            'No Categories added, Add now',
+          const Text(
+            'Categories are required to add task. Create one now!',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3,
+            style: TextStyle(fontSize: 18),
           ),
           const SizedBox(
             height: 20,

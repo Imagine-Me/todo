@@ -23,6 +23,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   TodoBloc({required this.categoryBloc})
       : super(TodoInitial(categoryState: CategoryState())) {
     on<GetTodo>((event, emit) {
+      print('GET TODO EMITTED ${event.todos} $_categoryState');
       emit(TodoLoaded(
         todos: event.todos,
         categoryState: _categoryState,
@@ -103,9 +104,9 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
       await database.deleteTodo(event.todosCompanion);
       getTodos();
     });
-    // subscribeTodoTable();
-    getTodos();
+
     subscribeCategory();
+    getTodos();
   }
 
   Future<void> getTodos() async {
@@ -114,6 +115,7 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   void subscribeCategory() {
+    _categoryState = categoryBloc.state;
     categoryStream = categoryBloc.stream.listen((event) {
       _categoryState = event;
       if (state is TodoLoaded) {
@@ -124,7 +126,11 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
 
   void setNotification(int id, String body, DateTime schedule) {
     scheduleNotification(
-        id: id, title: 'Reminder', body: body, scheduledTime: schedule);
+      id: id,
+      title: 'Reminder',
+      body: body,
+      scheduledTime: schedule,
+    );
   }
 
   @override
