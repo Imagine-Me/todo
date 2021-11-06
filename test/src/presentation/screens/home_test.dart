@@ -47,7 +47,6 @@ void main() {
     await file.delete();
   });
 
-
   testWidgets('home screen', (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(makeHomeScreen());
@@ -118,7 +117,10 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
       await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      // expect(find.byType(SnackBar), findsOneWidget);
 
+      print('CHECK IF SNACKBAR SHOWN');
+      // expect(find.byType(SnackBar), findsNothing);
       expect(
           (tester.widget(find.descendant(
                   of: todoCard, matching: find.byType(Checkbox))) as Checkbox)
@@ -138,6 +140,11 @@ void main() {
                   of: todoCard, matching: find.byType(Checkbox))) as Checkbox)
               .value,
           false);
+      await tester.pump(const Duration(milliseconds: 200));
+      expect(find.byType(SnackBar), findsOneWidget);
+      await tester.pumpAndSettle(const Duration(milliseconds: 1000));
+      // expect(find.byType(SnackBar), findsNothing);
+
       print('SWIPING RIGHT TO LEFT (IS COMPLETED WILL BE FALSE)');
       await tester.drag(todoCard, const Offset(-500, 0));
       await tester.pumpAndSettle();
