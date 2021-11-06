@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:todo/src/presentation/screens/category.dart';
-import 'package:todo/src/presentation/screens/home.dart';
+import 'package:todo/src/presentation/screens/home/home.dart';
 import 'package:todo/src/presentation/screens/initial.dart';
 
 class TodoRouter {
   ModalRoute onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
-      case '/initial':
-        return MaterialPageRoute(
-            settings: routeSettings, builder: (_) => const InitialScreen());
       case '/':
         return MaterialPageRoute(
-            settings: routeSettings, builder: (_) => const HomeScreen());
+          settings: routeSettings,
+          builder: (_) => const InitialScreen(),
+        );
+      case '/home':
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const HomeScreen(),
+        );
       case '/category':
         return MaterialPageRoute(
-            settings: routeSettings, builder: (_) => const CategoryScreen());
+          settings: routeSettings,
+          builder: (_) => const CategoryScreen(),
+        );
       default:
         throw UnimplementedError('Route is not implemented');
     }

@@ -1,11 +1,13 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_main.dart';
 import 'package:todo/src/presentation/widgets/category_form.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
+import 'package:todo/src/presentation/widgets/snackbar.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -96,13 +98,7 @@ class CategoryScreen extends StatelessWidget {
                               ),
                             ),
                           );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Category Deleted'),
-                              duration: Duration(milliseconds: 800),
-                              backgroundColor: Colors.redAccent,
-                            ),
-                          );
+                          showCustomSnackbar(context, 'Category deleted', SnackBarType.error);
                         },
                       );
                     });

@@ -1,110 +1,22 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
-import 'package:todo/src/logic/bloc/user/user_bloc.dart';
+import 'package:todo/src/presentation/screens/home/components/add_category.dart';
+import 'package:todo/src/presentation/screens/home/components/floating_button.dart';
+import 'package:todo/src/presentation/screens/home/components/todo_empty.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
+import 'package:todo/src/presentation/widgets/snackbar.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
 import 'package:todo/src/presentation/widgets/todo_form.dart';
 
+import 'components/sections.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  Widget floatingButton() {
-    return Builder(builder: (context) {
-      return FloatingActionButton(
-        onPressed: () => onFloatingActionButtonPressed(context, null),
-        child: const Icon(Icons.add),
-      );
-    });
-  }
-
-  Widget addCategory(context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'No Categories added, Add now',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/category');
-            },
-            icon: const Icon(Icons.add),
-            label: const Text('Create Category'),
-            style: ElevatedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 25)),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget todoEmpty(context) {
-    return Center(
-      child: Text(
-        'Wow, such empty!',
-        style: Theme.of(context).textTheme.headline3,
-      ),
-    );
-  }
-
-  List<Widget> topSection() {
-    return [
-      BlocBuilder<UserBloc, UserState>(
-        builder: (context, state) {
-          return Text(
-            'Hi ${state.name}',
-            style: Theme.of(context).textTheme.headline2,
-          );
-        },
-      ),
-      const SizedBox(
-        height: 10,
-      ),
-      Builder(builder: (context) {
-        return Text(
-          'CATEGORIES',
-          style: Theme.of(context).textTheme.headline5,
-        );
-      }),
-      const SizedBox(
-        height: 10,
-      )
-    ];
-  }
-
-  List<Widget> middleSection() {
-    return [
-      const SizedBox(
-        height: 10,
-      ),
-      BlocBuilder<TodoBloc, TodoState>(
-        builder: (context, state) {
-          String filterString = '';
-          if (state.categoryName != null) {
-            filterString += '( Category: ${state.categoryName} )';
-          }
-          return Text(
-            'TODOS $filterString',
-            style: Theme.of(context).textTheme.headline5,
-          );
-        },
-      ),
-      const SizedBox(
-        height: 5,
-      ),
-    ];
-  }
 
   onFloatingActionButtonPressed(context, TodosCompanion? todosCompanion) {
     showModalBottomSheet(
@@ -125,21 +37,18 @@ class HomeScreen extends StatelessWidget {
     final TodosCompanion todosCompanion = TodosCompanion(
       id: drift.Value(entity.id),
       title: drift.Value(entity.title),
-      content: drift.Value(entity.content),
       isCompleted: drift.Value(val ?? false),
       category: drift.Value(entity.category),
     );
 
     BlocProvider.of<TodoBloc>(context)
         .add(ToggleCompletedTodo(todosCompanion: todosCompanion));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: val != null && val
-            ? const Text('Todo moved to completed')
-            : const Text('Todo moved to uncompleted'),
-        duration: const Duration(milliseconds: 800),
-      ),
-    );
+    if (val != null && val) {
+      showCustomSnackbar(context, 'Todo moved to completed', SnackBarType.info);
+    } else {
+      showCustomSnackbar(
+          context, 'Todo moved to uncompleted', SnackBarType.info);
+    }
   }
 
   onTodoDismissed(DismissDirection direction, Todo entity, context) {
@@ -150,21 +59,12 @@ class HomeScreen extends StatelessWidget {
         final TodosCompanion todosCompanion = TodosCompanion(
           id: drift.Value(entity.id),
           title: drift.Value(entity.title),
-          content: drift.Value(entity.content),
           isCompleted: drift.Value(entity.isCompleted),
           category: drift.Value(entity.category),
         );
         BlocProvider.of<TodoBloc>(context)
             .add(DeleteTodo(todosCompanion: todosCompanion));
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Todo deleted',
-            ),
-            duration: Duration(milliseconds: 800),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showCustomSnackbar(context, 'Todo deleted', SnackBarType.error);
       } else {
         // ADD TO COMPLETE
         onCheckBoxClickHandler(true, entity, context);
@@ -175,13 +75,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   onTodoTap(Todo entity, context) {
-    final TodosCompanion todosCompanion = TodosCompanion(
-      id: drift.Value(entity.id),
-      title: drift.Value(entity.title),
-      content: drift.Value(entity.content),
-      category: drift.Value(entity.category),
-    );
-    onFloatingActionButtonPressed(context, todosCompanion);
+    onFloatingActionButtonPressed(context, entity.toCompanion(true));
   }
 
   @override
@@ -239,9 +133,9 @@ class HomeScreen extends StatelessWidget {
                   );
                 } else {
                   if (state.categoryState.categories.isEmpty) {
-                    return addCategory(context);
+                    return const AddCategory();
                   }
-                  return todoEmpty(context);
+                  return const TodoEmpty();
                 }
               } else {
                 return const Center(
@@ -252,7 +146,9 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingButton: floatingButton(),
+      floatingButton: FloatingButton(
+        onFloatingActionButtonPressed: onFloatingActionButtonPressed,
+      ),
     );
   }
 }
