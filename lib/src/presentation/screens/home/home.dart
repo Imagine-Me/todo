@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 import 'package:todo/src/presentation/screens/home/components/add_category.dart';
@@ -8,6 +9,7 @@ import 'package:todo/src/presentation/screens/home/components/floating_button.da
 import 'package:todo/src/presentation/screens/home/components/todo_empty.dart';
 import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
+import 'package:todo/src/presentation/widgets/snackbar.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
 import 'package:todo/src/presentation/widgets/todo_form.dart';
 
@@ -41,14 +43,12 @@ class HomeScreen extends StatelessWidget {
 
     BlocProvider.of<TodoBloc>(context)
         .add(ToggleCompletedTodo(todosCompanion: todosCompanion));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: val != null && val
-            ? const Text('Todo moved to completed')
-            : const Text('Todo moved to uncompleted'),
-        duration: const Duration(milliseconds: 800),
-      ),
-    );
+    if (val != null && val) {
+      showCustomSnackbar(context, 'Todo moved to completed', SnackBarType.info);
+    } else {
+      showCustomSnackbar(
+          context, 'Todo moved to uncompleted', SnackBarType.info);
+    }
   }
 
   onTodoDismissed(DismissDirection direction, Todo entity, context) {
@@ -64,15 +64,7 @@ class HomeScreen extends StatelessWidget {
         );
         BlocProvider.of<TodoBloc>(context)
             .add(DeleteTodo(todosCompanion: todosCompanion));
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Todo deleted',
-            ),
-            duration: Duration(milliseconds: 800),
-            backgroundColor: Colors.red,
-          ),
-        );
+        showCustomSnackbar(context, 'Todo deleted', SnackBarType.error);
       } else {
         // ADD TO COMPLETE
         onCheckBoxClickHandler(true, entity, context);

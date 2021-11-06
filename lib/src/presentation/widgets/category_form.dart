@@ -1,8 +1,10 @@
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
+import 'package:todo/src/presentation/widgets/snackbar.dart';
 
 class CategoryForm extends StatefulWidget {
   const CategoryForm({Key? key, this.categoriesCompanion}) : super(key: key);
@@ -27,7 +29,12 @@ class _CategoryFormState extends State<CategoryForm> {
     0xffc4314c,
     0xffff4554,
     0xff85fffb,
-    0xff6a1ce8
+    0xff6a1ce8,
+    0xffff02e5,
+    0xff6aa0a3,
+    0xff037f0c,
+    0xff8e7e02,
+    0xffb57e7e
   ];
   final _formKey = GlobalKey<FormState>();
   late int selectedColor;
@@ -57,24 +64,9 @@ class _CategoryFormState extends State<CategoryForm> {
           .add(AddCategory(category: categoriesCompanion));
       Navigator.of(context).pop();
       if (widget.categoriesCompanion != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content:
-                Text('Category Updated', style: TextStyle(color: Colors.black)),
-            duration: Duration(milliseconds: 800),
-            backgroundColor: Colors.yellowAccent,
-          ),
-        );
+        showCustomSnackbar(context, 'Category updated', SnackBarType.primary);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Category Added',
-            ),
-            duration: Duration(milliseconds: 800),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
+        showCustomSnackbar(context, 'Category added', SnackBarType.success);
       }
     }
   }
