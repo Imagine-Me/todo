@@ -15,6 +15,12 @@ class CategoryState extends Equatable {
   Map<int, String> get colors =>
       {for (Category category in categories) category.id: category.color};
 
+  String getCategory(int id) {
+    final Category category =
+        categories.firstWhere((element) => element.id == id);
+    return category.category;
+  }
+
   @override
   List<Object?> get props => categories.isEmpty
       ? [categories]

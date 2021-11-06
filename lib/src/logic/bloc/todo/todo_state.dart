@@ -25,8 +25,14 @@ abstract class TodoState {
         .where((element) => (category == null || element.category == category))
         .map((e) => TodoModel(
             title: e.title,
-            color: categoryState.colors[e.category] ?? '0xff000000',
-            isCompleted: e.isCompleted,))
+            color: categoryState.colors[e.category] != null
+                ? int.parse(categoryState.colors[e.category]!)
+                : 0xff000000,
+            isCompleted: e.isCompleted,
+            createdAt: e.isCreatedAt,
+            category: e.category != null
+                ? categoryState.getCategory(e.category!)
+                : 'Others'))
         .toList();
   }
 

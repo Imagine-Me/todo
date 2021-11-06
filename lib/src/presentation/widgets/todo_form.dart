@@ -112,8 +112,11 @@ class _TodoFormState extends State<TodoForm> {
                 children: [
                   TextFormField(
                     key: const Key('todo_form_title'),
+                    keyboardType: TextInputType.multiline,
                     controller: titleTextController,
                     textCapitalization: TextCapitalization.sentences,
+                    maxLines: 3,
+                    minLines: 1,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Enter Task',

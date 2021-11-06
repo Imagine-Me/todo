@@ -28,7 +28,7 @@ class _CategoryFormState extends State<CategoryForm> {
     0xffd149a8,
     0xffc4314c,
     0xffff4554,
-    0xff85fffb,
+    0xff0f5f77,
     0xff6a1ce8,
     0xffff02e5,
     0xff6aa0a3,
