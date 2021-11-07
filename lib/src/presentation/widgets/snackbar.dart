@@ -19,6 +19,7 @@ void showCustomSnackbar(context, String title, SnackBarType type) {
       backgroundColor = Colors.green;
   }
 
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(title, style: TextStyle(color: textColor)),
