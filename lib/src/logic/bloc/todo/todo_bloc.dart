@@ -29,7 +29,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
           todoFilter: TodoFilter(null, OrderTypes.created),
         )) {
     on<GetTodo>((event, emit) {
-      print('GET TODO EMITTED ${event.todos} $_categoryState');
       emit(TodoLoaded(
           todos: event.todos,
           categoryState: _categoryState,
@@ -95,15 +94,13 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<FilterTodo>((event, emit) {
       _category = event.category;
       final newState = TodoLoaded(
-        categoryState: _categoryState,
-        todos: state.todos,
-        category: event.category,
-        todoFilter: _filter
-      );
+          categoryState: _categoryState,
+          todos: state.todos,
+          category: event.category,
+          todoFilter: _filter);
       emit(newState);
     });
     on<TodoFilter>((event, emit) async {
-      print('FILTERING ${event.filterBycompleted} ${event.orderTypes}');
       _filter = event;
       getTodos();
     });

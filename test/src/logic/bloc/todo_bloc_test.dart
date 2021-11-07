@@ -18,6 +18,10 @@ void main() {
     categoryBloc = CategoryBloc();
     todoBloc = TodoBloc(categoryBloc: categoryBloc);
   });
+  tearDown((){
+    categoryBloc.close();
+    todoBloc.close();
+  });
 
   tearDownAll(() async {
     print('TEARING DOWN THE TESTS...');

@@ -132,6 +132,7 @@ class _TodoFormState extends State<TodoForm> {
                     height: 15,
                   ),
                   GestureDetector(
+                    key: const Key('todo_form_remind_me'),
                     onTap: () {
                       showDialog(
                           context: context,
