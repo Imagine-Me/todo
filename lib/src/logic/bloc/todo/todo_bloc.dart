@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:todo/src/logic/model/catergory_model.dart';
@@ -20,15 +21,20 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   CategoryState _categoryState = CategoryState();
   int? _category;
 
+  TodoFilter _filter = TodoFilter(null, OrderTypes.created);
+
   TodoBloc({required this.categoryBloc})
-      : super(TodoInitial(categoryState: CategoryState())) {
+      : super(TodoInitial(
+          categoryState: CategoryState(),
+          todoFilter: TodoFilter(null, OrderTypes.created),
+        )) {
     on<GetTodo>((event, emit) {
       print('GET TODO EMITTED ${event.todos} $_categoryState');
       emit(TodoLoaded(
-        todos: event.todos,
-        categoryState: _categoryState,
-        category: _category,
-      ));
+          todos: event.todos,
+          categoryState: _categoryState,
+          category: _category,
+          todoFilter: _filter));
     });
     on<AddTodo>((event, _) async {
       TodosCompanion todosCompanion = event.todosCompanion;
@@ -89,10 +95,17 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     on<FilterTodo>((event, emit) {
       _category = event.category;
       final newState = TodoLoaded(
-          categoryState: _categoryState,
-          todos: state.todos,
-          category: event.category);
+        categoryState: _categoryState,
+        todos: state.todos,
+        category: event.category,
+        todoFilter: _filter
+      );
       emit(newState);
+    });
+    on<TodoFilter>((event, emit) async {
+      print('FILTERING ${event.filterBycompleted} ${event.orderTypes}');
+      _filter = event;
+      getTodos();
     });
     on<DeleteTodo>((event, _) async {
       if (event.todosCompanion.notification.value != null) {
@@ -110,7 +123,10 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
   }
 
   Future<void> getTodos() async {
-    final List<Todo> todos = await database.getTodos();
+    final List<Todo> todos = await database.getTodos(
+      filter: _filter.filterBycompleted,
+      orderTypes: _filter.orderTypes,
+    );
     add(GetTodo(todos: todos));
   }
 

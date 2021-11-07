@@ -11,6 +11,7 @@ import 'package:todo/src/presentation/widgets/category_card/card_home.dart';
 import 'package:todo/src/presentation/widgets/layout.dart';
 import 'package:todo/src/presentation/widgets/snackbar.dart';
 import 'package:todo/src/presentation/widgets/todo_card.dart';
+import 'package:todo/src/presentation/widgets/todo_filter_alert.dart';
 import 'package:todo/src/presentation/widgets/todo_form.dart';
 
 import 'components/sections.dart';
@@ -78,6 +79,26 @@ class HomeScreen extends StatelessWidget {
     onFloatingActionButtonPressed(context, entity.toCompanion(true));
   }
 
+  showFilterDialog(context) {
+    showDialog(
+      context: context,
+      builder: (_) => TodoFilterAlert(
+        onSubmit: filterTodos,
+      ),
+    );
+  }
+
+  void filterTodos(
+      BuildContext context, String? filter, OrderTypes orderTypes) {
+    bool? filterVal;
+    if (filter == 'completed') {
+      filterVal = true;
+    } else if (filter == 'uncompleted')  {
+      filterVal = false;
+    }
+    BlocProvider.of<TodoBloc>(context).add(TodoFilter(filterVal, orderTypes));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Layout(
@@ -99,7 +120,7 @@ class HomeScreen extends StatelessWidget {
               },
             ),
           ),
-          ...middleSection(),
+          ...middleSection(() => showFilterDialog(context)),
           Expanded(
             child: BlocBuilder<TodoBloc, TodoState>(builder: (context, state) {
               if (state is TodoLoaded) {
