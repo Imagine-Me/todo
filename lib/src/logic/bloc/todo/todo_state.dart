@@ -5,9 +5,11 @@ abstract class TodoState {
   final List<Todo> todos;
   final CategoryState categoryState;
   final int? category;
+  final TodoFilter todoFilter;
   const TodoState({
     this.todos = const [],
     required this.categoryState,
+    required this.todoFilter,
     this.category,
   });
 
@@ -71,16 +73,23 @@ abstract class TodoState {
 }
 
 class TodoInitial extends TodoState {
-  const TodoInitial({required CategoryState categoryState})
-      : super(categoryState: categoryState);
+  const TodoInitial(
+      {required CategoryState categoryState, required TodoFilter todoFilter})
+      : super(categoryState: categoryState, todoFilter: todoFilter);
 }
 
 class TodoLoaded extends TodoState with EquatableMixin {
   const TodoLoaded(
       {required CategoryState categoryState,
       int? category,
-      required List<Todo> todos})
-      : super(categoryState: categoryState, category: category, todos: todos);
+      required List<Todo> todos,
+      required TodoFilter todoFilter})
+      : super(
+          categoryState: categoryState,
+          category: category,
+          todos: todos,
+          todoFilter: todoFilter,
+        );
 
   @override
   List<Object?> get props => todos.isEmpty
@@ -92,7 +101,8 @@ class TodoLoaded extends TodoState with EquatableMixin {
           ...todos.map((e) => e.remindAt).toList(),
           ...todos.map((e) => e.notification).toList(),
           category,
-          categoryState
+          categoryState,
+          todoFilter
         ];
 
   @override

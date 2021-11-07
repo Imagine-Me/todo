@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:todo/src/constants/enum.dart';
 
 part 'database.g.dart';
 
@@ -87,8 +88,31 @@ class TodoTable extends _$TodoTable {
     return (select(todos)..orderBy([(t) => OrderingTerm.desc(t.id)])).watch();
   }
 
-  Future<List<Todo>> getTodos() {
-    return (select(todos)..orderBy([(t) => OrderingTerm.desc(t.id)])).get();
+  Future<List<Todo>> getTodos(
+      {bool? filter, OrderTypes orderTypes = OrderTypes.created}) async {
+    List<Todo> completedList = [];
+    List<Todo> unCompletedList = [];
+    if (filter == null || filter) {
+      final query = select(todos)..where((tbl) => tbl.isCompleted.equals(true));
+      completedList = await filterTodos(query, orderTypes).get();
+    }
+    if (filter == null || filter == false) {
+      final query = select(todos)..where((tbl) => tbl.isCompleted.not());
+      unCompletedList = await filterTodos(query, orderTypes).get();
+    }
+
+    return [...unCompletedList, ...completedList];
+  }
+
+  filterTodos(var list, OrderTypes order) {
+    switch (order) {
+      case OrderTypes.created:
+        return list..orderBy([(t) => OrderingTerm.desc(t.isCreatedAt)]);
+      case OrderTypes.remind:
+        return list..orderBy([(t) => OrderingTerm.desc(t.remindAt)]);
+      case OrderTypes.category:
+        return list..orderBy([(t) => OrderingTerm.desc(t.category)]);
+    }
   }
 
   Future<int> addTodo(TodosCompanion entity) {

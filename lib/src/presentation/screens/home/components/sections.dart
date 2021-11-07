@@ -28,22 +28,29 @@ List<Widget> topSection() {
   ];
 }
 
-List<Widget> middleSection() {
+List<Widget> middleSection(VoidCallback onFilterSelected) {
   return [
     const SizedBox(
       height: 10,
     ),
-    BlocBuilder<TodoBloc, TodoState>(
-      builder: (context, state) {
-        String filterString = '';
-        if (state.categoryName != null) {
-          filterString += '( Category: ${state.categoryName} )';
-        }
-        return Text(
-          'TODOS $filterString',
-          style: Theme.of(context).textTheme.headline5,
-        );
-      },
+    Flex(
+      direction: Axis.horizontal,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        BlocBuilder<TodoBloc, TodoState>(
+          builder: (context, state) {
+            String filterString = '';
+            if (state.categoryName != null) {
+              filterString += '( Category: ${state.categoryName} )';
+            }
+            return Text(
+              'TODOS $filterString',
+              style: Theme.of(context).textTheme.headline5,
+            );
+          },
+        ),
+        IconButton(onPressed: onFilterSelected, icon: const Icon(Icons.filter_list_sharp))
+      ],
     ),
     const SizedBox(
       height: 5,

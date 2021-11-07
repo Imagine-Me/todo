@@ -31,3 +31,10 @@ class DeleteTodo extends TodoEvent {
 
   DeleteTodo({required this.todosCompanion});
 }
+
+class TodoFilter extends TodoEvent {
+  final bool? filterBycompleted;
+  final OrderTypes orderTypes;
+
+  TodoFilter(this.filterBycompleted, this.orderTypes);
+}
