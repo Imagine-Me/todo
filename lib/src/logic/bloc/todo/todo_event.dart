@@ -32,9 +32,15 @@ class DeleteTodo extends TodoEvent {
   DeleteTodo({required this.todosCompanion});
 }
 
-class TodoFilter extends TodoEvent {
+class TodoFilter extends TodoEvent with EquatableMixin {
   final bool? filterBycompleted;
   final OrderTypes orderTypes;
 
   TodoFilter(this.filterBycompleted, this.orderTypes);
+
+  @override
+  List<Object?> get props => [filterBycompleted, orderTypes];
+
+  @override
+  bool? get stringify => true;
 }
