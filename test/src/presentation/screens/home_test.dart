@@ -11,6 +11,7 @@ import 'package:todo/src/logic/bloc/todo/todo_bloc.dart';
 import 'package:todo/src/logic/bloc/user/user_bloc.dart';
 import 'package:todo/src/presentation/screens/home/home.dart';
 import 'package:path/path.dart' as p;
+import 'package:todo/src/presentation/widgets/animation/todo_loader/todo_loader.dart';
 
 void main() {
   late CategoryBloc _categoryBloc;
@@ -47,7 +48,8 @@ void main() {
     await file.delete();
   });
 
-  testWidgets('home screen', (WidgetTester tester) async {
+  testWidgets('home screen - check for loading screen',
+      (WidgetTester tester) async {
     await tester.runAsync(() async {
       await tester.pumpWidget(makeHomeScreen());
       final categoryFinder = find.text('CATEGORIES');
@@ -60,132 +62,258 @@ void main() {
     });
   });
 
-  testWidgets('should have add category', (WidgetTester tester) async {
+  testWidgets('home screen - if categories are not check for add category text',
+      (WidgetTester tester) async {
     await tester.runAsync(() async {
-      _categoryBloc.add(AddCategory(
+      await tester.pumpWidget(makeHomeScreen());
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+      expect(
+        find.text('Categories are required to add task. Create one now!'),
+        findsOneWidget,
+      );
+      await todoBloc.close();
+    });
+  });
+
+  testWidgets('home screen - empty text for todo when category added',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      _categoryBloc.add(
+        AddCategory(
           category: const CategoriesCompanion(
-              category: Value('office'), color: Value('0xff00000'))));
+            category: Value('office'),
+            color: Value('0xff00000'),
+          ),
+        ),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+      expect(find.text('Wow, such empty!'), findsOneWidget);
+      expect(find.byType(TodoLoader), findsOneWidget);
+      expect(find.text('office'), findsOneWidget);
+      await todoBloc.close();
+    });
+  });
+
+  testWidgets('home screen - add category', (WidgetTester tester) async {
+    await tester.runAsync(() async {
       await tester.pumpWidget(makeHomeScreen());
       expect(find.byType(FloatingActionButton), findsOneWidget);
       await tester.tap(find.byType(FloatingActionButton));
-      expect(find.text('Loading....'), findsOneWidget);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
-
+      await tester.pumpAndSettle();
       expect(find.byType(BottomSheet), findsOneWidget);
-
       final titleField = find.byKey(const Key('todo_form_title'));
-      final submitButton = find.byKey(const Key('todo_form_submit_button'));
+      final remindMeButton = find.byKey(const Key('todo_form_remind_me'));
       final categoryDropdown = find.byKey(const Key('todo_form_category'));
+      final submitButton = find.byKey(const Key('todo_form_submit_button'));
       expect(titleField, findsOneWidget);
+      expect(remindMeButton, findsOneWidget);
+      expect(categoryDropdown, findsOneWidget);
       expect(submitButton, findsOneWidget);
+
       await tester.enterText(titleField, 'my first todo');
-      expect((tester.widget(titleField) as TextFormField).controller!.text,
-          'my first todo');
       await tester.tap(submitButton);
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
       expect(find.text('Please select category'), findsOneWidget);
 
       await tester.tap(categoryDropdown);
-      await tester.pumpAndSettle(const Duration(seconds: 1));
+      await tester.pump();
       final dropdownMenus =
           find.descendant(of: categoryDropdown, matching: find.text('office'));
       expect(dropdownMenus, findsWidgets);
       await tester.tap(dropdownMenus);
-      await tester.pump(const Duration(seconds: 1));
+      await tester.pump();
       expect(
           find.descendant(of: categoryDropdown, matching: find.text('office')),
           findsOneWidget);
-
       await tester.tap(submitButton);
-      await tester.pumpAndSettle(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
       expect(find.byType(BottomSheet), findsNothing);
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+      expect(find.byType(TodoLoader), findsNothing);
+      expect(find.text('my first todo'), findsOneWidget);
+      await todoBloc.close();
+    });
+  });
+
+  testWidgets('home screen - clicking the checkbox',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
 
       final todoList = find.byKey(const Key('todo_list'));
       expect(todoList, findsOneWidget);
       final todoCard =
           find.descendant(of: todoList, matching: find.byType(Dismissible));
       expect(todoCard, findsOneWidget);
-
-      print('CLICKING ON CHECK BOX....');
-
-      await tester
-          .tap(find.descendant(of: todoCard, matching: find.byType(Checkbox)));
-
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      // expect(find.byType(SnackBar), findsOneWidget);
-
-      print('CHECK IF SNACKBAR SHOWN');
-      // expect(find.byType(SnackBar), findsNothing);
+      await tester.tap(
+        find.descendant(of: todoCard, matching: find.byType(Checkbox)),
+      );
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
       expect(
           (tester.widget(find.descendant(
                   of: todoCard, matching: find.byType(Checkbox))) as Checkbox)
               .value,
           true);
+      await todoBloc.close();
+    });
+  });
 
-      print('SWIPING LEFT TO RIGHT (IS COMPLETED WILL BE FALSE)');
+  testWidgets('home screen - swiping left to right make task uncompleted',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+
+      final todoList = find.byKey(const Key('todo_list'));
+      expect(todoList, findsOneWidget);
+      final todoCard =
+          find.descendant(of: todoList, matching: find.byType(Dismissible));
+      expect(todoCard, findsOneWidget);
       await tester.drag(todoCard, const Offset(500, 0));
       await tester.pumpAndSettle();
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
       expect(
           (tester.widget(find.descendant(
                   of: todoCard, matching: find.byType(Checkbox))) as Checkbox)
               .value,
           false);
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(find.byType(SnackBar), findsOneWidget);
-      await tester.pumpAndSettle(const Duration(milliseconds: 1000));
-      // expect(find.byType(SnackBar), findsNothing);
+      await todoBloc.close();
+    });
+  });
 
-      print('SWIPING RIGHT TO LEFT (IS COMPLETED WILL BE FALSE)');
+  testWidgets('home screen - swiping right to left make task completed',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+
+      final todoList = find.byKey(const Key('todo_list'));
+      expect(todoList, findsOneWidget);
+      final todoCard =
+          find.descendant(of: todoList, matching: find.byType(Dismissible));
+      expect(todoCard, findsOneWidget);
       await tester.drag(todoCard, const Offset(-500, 0));
       await tester.pumpAndSettle();
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
       expect(
           (tester.widget(find.descendant(
                   of: todoCard, matching: find.byType(Checkbox))) as Checkbox)
               .value,
           true);
+      await todoBloc.close();
+    });
+  });
 
-      print('CLICKING ON TODO');
+  testWidgets(
+      'home screen - clicking on todo card will open up bottomsheet with data and updation',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+
+      final todoList = find.byKey(const Key('todo_list'));
+      expect(todoList, findsOneWidget);
+      final todoCard =
+          find.descendant(of: todoList, matching: find.byType(Dismissible));
+      expect(todoCard, findsOneWidget);
       await tester.tap(todoCard);
-      await tester.pumpAndSettle(const Duration(milliseconds: 200));
-      expect(find.byType(BottomSheet), findsOneWidget);
-      expect(find.text('Update'), findsOneWidget);
-      expect((tester.widget(titleField) as TextFormField).controller!.text,
-          'my first todo');
 
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsOneWidget);
+
+      final titleField = find.byKey(const Key('todo_form_title'));
+      final submitButton = find.byKey(const Key('todo_form_submit_button'));
+
+      expect(
+          (titleField.evaluate().single.widget as TextFormField)
+              .controller!
+              .text,
+          'my first todo');
       await tester.enterText(titleField, 'my first todo updated');
-      expect((tester.widget(titleField) as TextFormField).controller!.text,
-          'my first todo updated');
       await tester.tap(submitButton);
-      await tester.pumpAndSettle(const Duration(milliseconds: 200));
+      await tester.pumpAndSettle();
       expect(find.byType(BottomSheet), findsNothing);
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      await tester.pumpAndSettle(const Duration(milliseconds: 500));
-      print('CHECKING UPDATES WORKS');
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
       expect(find.text('my first todo updated'), findsOneWidget);
-      print('SWIPING RIGHT TO LEFT (ITEM WILL BE DELETED)');
+
+      await todoBloc.close();
+    });
+  });
+
+  testWidgets('home screen- check remind alert is showing',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      expect(find.byType(BottomSheet), findsOneWidget);
+
+      final remindMe = find.byKey(const Key('todo_form_remind_me'));
+      expect(remindMe, findsOneWidget);
+
+      await tester.tap(remindMe);
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      await todoBloc.close();
+    });
+  });
+
+  testWidgets('home screen- check filter alert is showing',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      final filterButton = find.byKey(const Key('home_filter_button'));
+      expect(filterButton, findsOneWidget);
+
+      await tester.tap(filterButton);
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      expect(find.byType(AlertDialog), findsOneWidget);
+
+      await todoBloc.close();
+    });
+  });
+
+  testWidgets('home screen - swiping right to left make task deleted if it is already completed',
+      (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      await tester.pumpWidget(makeHomeScreen());
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      final todoList = find.byKey(const Key('todo_list'));
+      expect(todoList, findsOneWidget);
+      final todoCard =
+          find.descendant(of: todoList, matching: find.byType(Dismissible));
+      expect(todoCard, findsOneWidget);
+      expect(
+          (tester.widget(find.descendant(
+                  of: todoCard, matching: find.byType(Checkbox))) as Checkbox)
+              .value,
+          true);
       await tester.drag(todoCard, const Offset(-500, 0));
       await tester.pumpAndSettle();
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      await tester.pump(const Duration(milliseconds: 200));
-      expect(todoList, findsNothing);
+      await Future.delayed(const Duration(seconds: 1));
+      await tester.pump();
+      expect(find.byType(TodoLoader), findsOneWidget);
       await todoBloc.close();
     });
   });

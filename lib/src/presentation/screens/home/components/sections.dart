@@ -49,7 +49,7 @@ List<Widget> middleSection(VoidCallback onFilterSelected) {
             );
           },
         ),
-        IconButton(onPressed: onFilterSelected, icon: const Icon(Icons.filter_list_sharp))
+        IconButton(key: const Key('home_filter_button'), onPressed: onFilterSelected, icon: const Icon(Icons.filter_list_sharp))
       ],
     ),
     const SizedBox(
