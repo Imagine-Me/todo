@@ -2,24 +2,26 @@ part of 'user_bloc.dart';
 
 @immutable
 abstract class UserState {
-  final String name;
+  final User? user;
   const UserState({
-    required this.name,
+    this.user,
   });
+
+  String get name => user!=null ? user!.name : '';
 }
 
 class UserInitial extends UserState {
   final bool loading = true;
 
-  const UserInitial() : super(name: '');
+  const UserInitial();
 }
 
 class UserLoaded extends UserState {
   final User user;
 
-  UserLoaded({required this.user}) : super(name: user.name);
+  const UserLoaded({required this.user}) : super(user: user);
 }
 
 class UserNotFound extends UserState {
-  const UserNotFound() : super(name: '');
+  const UserNotFound();
 }

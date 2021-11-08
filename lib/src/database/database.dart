@@ -61,7 +61,7 @@ class TodoTable extends _$TodoTable {
   }
 
   Future<int> addUser(UsersCompanion entity) {
-    return into(users).insert(entity);
+    return into(users).insertOnConflictUpdate(entity);
   }
 
   //! NOTIFICATION TABLE
