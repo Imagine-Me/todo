@@ -83,6 +83,7 @@ class _CategoryFormState extends State<CategoryForm> {
               child: Column(
                 children: [
                   TextFormField(
+                    key: const Key('category_form_category'),
                     controller: categoryTextController,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: const InputDecoration(
@@ -133,6 +134,7 @@ class _CategoryFormState extends State<CategoryForm> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      key: const Key('category_form_submit'),
                       onPressed: onFormSubmit,
                       child: widget.categoriesCompanion == null
                           ? const Text('Create')
