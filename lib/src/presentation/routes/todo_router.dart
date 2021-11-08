@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo/src/presentation/screens/category.dart';
 import 'package:todo/src/presentation/screens/home/home.dart';
 import 'package:todo/src/presentation/screens/initial.dart';
+import 'package:todo/src/presentation/screens/user/user.dart';
 
 class TodoRouter {
   ModalRoute onGenerateRoute(RouteSettings routeSettings) {
@@ -20,6 +21,11 @@ class TodoRouter {
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (_) => const CategoryScreen(),
+        );
+        case '/user':
+        return MaterialPageRoute(
+          settings: routeSettings,
+          builder: (_) => const User(),
         );
       default:
         throw UnimplementedError('Route is not implemented');
