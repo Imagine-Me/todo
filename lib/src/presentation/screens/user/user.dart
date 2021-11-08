@@ -33,6 +33,7 @@ class User extends StatelessWidget {
                 },
               ),
               IconButton(
+                  key: const Key('user_name_edit'),
                   onPressed: () => showEditModal(context),
                   icon: const Icon(Icons.edit))
             ],
