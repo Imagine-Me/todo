@@ -25,7 +25,7 @@ class TodoRouter {
         case '/user':
         return MaterialPageRoute(
           settings: routeSettings,
-          builder: (_) => const User(),
+          builder: (_) => User(),
         );
       default:
         throw UnimplementedError('Route is not implemented');
