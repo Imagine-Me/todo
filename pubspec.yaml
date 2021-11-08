@@ -17,6 +17,7 @@ dependencies:
   intl: ^0.17.0
   path: ^1.8.0
   path_provider: ^2.0.5
+  pie_chart: ^5.1.0
   rxdart: ^0.27.2
   sqlite3_flutter_libs: ^0.5.1
 
@@ -40,7 +41,6 @@ flutter:
     - splash_logo.png
     - todo.png
     - form_background.png
-    
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
