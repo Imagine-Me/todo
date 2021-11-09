@@ -26,14 +26,11 @@ class _UserState extends State<User> {
   }
 
   void initializeData() async {
-    print('Hello there-initializing....');
     List<Todo> todos = await database.getTodos();
     CategoryState categoryState = BlocProvider.of<CategoryBloc>(context).state;
     final PieChartModel pieChartModel = PieChartModel();
     pieChartModel.todos = todos;
     pieChartModel.category = categoryState;
-    print(pieChartModel.dataMap);
-    print(pieChartModel.colorList);
     setState(() {
       dataMap = pieChartModel.dataMap;
       colorList = pieChartModel.colorList;
