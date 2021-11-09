@@ -10,7 +10,7 @@ class Layout extends StatelessWidget {
       : super(key: key);
 
   final Widget body;
-  final Widget floatingButton;
+  final Widget? floatingButton;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +57,16 @@ class Layout extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 TodoRouter.pushRoute('/category', context);
+              },
+            ),
+            ListTile(
+              title: Text(
+                'User',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              onTap: () {
+                Navigator.of(context).pop();
+                TodoRouter.pushRoute('/user', context);
               },
             ),
           ],

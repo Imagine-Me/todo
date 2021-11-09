@@ -15,10 +15,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(const UserNotFound());
       }
     });
-    on<AddUser>((event, emit) async {
+    on<AddUser>((event, _) async {
       await database.addUser(event.usersCompanion);
       add(GetUser());
     });
+
     add(GetUser());
   }
 }
