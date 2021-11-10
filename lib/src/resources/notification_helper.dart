@@ -52,7 +52,7 @@ Future<void> scheduleNotification(
 
   tz.TZDateTime time;
   if (daysBetween(DateTime.now(), scheduledTime) == 0) {
-    time = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 15));
+    time = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 2));
   } else {
     time = tz.TZDateTime.from(scheduledTime, tz.local);
   }
