@@ -35,12 +35,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   onCheckBoxClickHandler(bool? val, Todo entity, context) {
-    final TodosCompanion todosCompanion = TodosCompanion(
-      id: drift.Value(entity.id),
-      title: drift.Value(entity.title),
-      isCompleted: drift.Value(val ?? false),
-      category: drift.Value(entity.category),
-    );
+    final TodosCompanion todosCompanion = entity
+        .toCompanion(true)
+        .copyWith(isCompleted: drift.Value(val ?? false));
 
     BlocProvider.of<TodoBloc>(context)
         .add(ToggleCompletedTodo(todosCompanion: todosCompanion));
@@ -57,14 +54,8 @@ class HomeScreen extends StatelessWidget {
       // Check if task already completed
       if (entity.isCompleted) {
         // DELETE TODO
-        final TodosCompanion todosCompanion = TodosCompanion(
-          id: drift.Value(entity.id),
-          title: drift.Value(entity.title),
-          isCompleted: drift.Value(entity.isCompleted),
-          category: drift.Value(entity.category),
-        );
         BlocProvider.of<TodoBloc>(context)
-            .add(DeleteTodo(todosCompanion: todosCompanion));
+            .add(DeleteTodo(todosCompanion: entity.toCompanion(true)));
         showCustomSnackbar(context, 'Todo deleted', SnackBarType.error);
       } else {
         // ADD TO COMPLETE
@@ -93,7 +84,7 @@ class HomeScreen extends StatelessWidget {
     bool? filterVal;
     if (filter == 'completed') {
       filterVal = true;
-    } else if (filter == 'uncompleted')  {
+    } else if (filter == 'uncompleted') {
       filterVal = false;
     }
     BlocProvider.of<TodoBloc>(context).add(TodoFilter(filterVal, orderTypes));

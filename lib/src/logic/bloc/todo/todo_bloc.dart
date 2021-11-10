@@ -88,6 +88,16 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     });
 
     on<ToggleCompletedTodo>((event, _) async {
+      final int? notificationId = event.todosCompanion.notification.value;
+      if (notificationId != null) {
+        if (event.todosCompanion.isCompleted.value) {
+          await NotificationClass.flutterLocalNotificationsPlugin
+              .cancel(notificationId);
+        } else {
+          setNotification(notificationId, event.todosCompanion.title.value,
+              event.todosCompanion.remindAt.value!);
+        }
+      }
       await database.toggleCompleted(event.todosCompanion);
       getTodos();
     });
