@@ -33,7 +33,7 @@ Future<void> scheduleNotification(
     required DateTime scheduledTime}) async {
   const AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails(
-    'notification_4',
+    'notification_4_new_fo',
     'ScheduledNotification',
     channelDescription: 'Reminder of task',
     icon: 'todo_launcher',
@@ -52,7 +52,7 @@ Future<void> scheduleNotification(
 
   tz.TZDateTime time;
   if (daysBetween(DateTime.now(), scheduledTime) == 0) {
-    time = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 2));
+    time = tz.TZDateTime.now(tz.local).add(const Duration(hours: 2));
   } else {
     time = tz.TZDateTime.from(scheduledTime, tz.local);
   }
