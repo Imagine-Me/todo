@@ -31,11 +31,19 @@ Future<void> scheduleNotification(
     required String title,
     required String body,
     required DateTime scheduledTime}) async {
+
+  await NotificationClass.flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(const AndroidNotificationChannel(
+          'channel_id_1', 'ScheduledNotification',
+          importance: Importance.max, description: 'THIS IS THE DESCRIPTION',));
+
+
   const AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails(
-    'notification_4_new_fo',
+    'channel_id_1',
     'ScheduledNotification',
-    channelDescription: 'Reminder of task',
     icon: 'todo_launcher',
     importance: Importance.max,
     priority: Priority.high,
@@ -52,7 +60,7 @@ Future<void> scheduleNotification(
 
   tz.TZDateTime time;
   if (daysBetween(DateTime.now(), scheduledTime) == 0) {
-    time = tz.TZDateTime.now(tz.local).add(const Duration(hours: 2));
+    time = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 20));
   } else {
     time = tz.TZDateTime.from(scheduledTime, tz.local);
   }
