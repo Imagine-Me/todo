@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -31,27 +33,34 @@ Future<void> scheduleNotification(
     required String title,
     required String body,
     required DateTime scheduledTime}) async {
+  const int insistentFlag = 4;
 
   await NotificationClass.flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(const AndroidNotificationChannel(
-          'channel_id_1', 'ScheduledNotification',
-          importance: Importance.max, description: 'THIS IS THE DESCRIPTION',));
+      ?.createNotificationChannel(AndroidNotificationChannel(
+        title,
+        'ScheduledNotification_blah',
+        importance: Importance.defaultImportance,
+        description: 'THIS IS THE DESCRIPTION',
+      ));
 
-
-  const AndroidNotificationDetails androidNotificationDetails =
+  final AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails(
-    'channel_id_1',
-    'ScheduledNotification',
+    title,
+    'ScheduledNotification_blah',
     icon: 'todo_launcher',
-    importance: Importance.max,
-    priority: Priority.high,
+    importance: Importance.defaultImportance,
+    priority: Priority.defaultPriority,
     playSound: true,
-    sound: RawResourceAndroidNotificationSound('todo_notification'),
+    channelShowBadge: true,
+    usesChronometer: true,
+    ticker: 'ticker',
+    additionalFlags: Int32List.fromList(<int>[insistentFlag]),
+    sound: const RawResourceAndroidNotificationSound('todo_notification'),
   );
 
-  const NotificationDetails notificationDetails =
+  final NotificationDetails notificationDetails =
       NotificationDetails(android: androidNotificationDetails);
 
   tz.initializeTimeZones();
@@ -60,7 +69,7 @@ Future<void> scheduleNotification(
 
   tz.TZDateTime time;
   if (daysBetween(DateTime.now(), scheduledTime) == 0) {
-    time = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 20));
+    time = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 5));
   } else {
     time = tz.TZDateTime.from(scheduledTime, tz.local);
   }
@@ -69,4 +78,5 @@ Future<void> scheduleNotification(
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true);
+  print('SCHEDULED A NOTIFICATION ON $time');
 }
