@@ -6,11 +6,12 @@ part 'user_event.dart';
 part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(const UserInitial()) {
+  final String? firebaseToken;
+  UserBloc({this.firebaseToken}) : super(const UserInitial()) {
     on<GetUser>((event, emit) async {
       final List<User> users = await database.getUsers();
       if (users.isNotEmpty) {
-        emit(UserLoaded(user: users[0]));
+        emit(UserLoaded(user: users[0], firebaseToken: firebaseToken));
       } else {
         emit(const UserNotFound());
       }

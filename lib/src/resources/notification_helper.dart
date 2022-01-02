@@ -28,27 +28,31 @@ class NotificationClass {
   }
 }
 
-Future<void> scheduleNotification(
-    {required int id,
-    required String title,
-    required String body,
-    required DateTime scheduledTime}) async {
+Future<void> scheduleNotification({
+  required int id,
+  required String title,
+  required String body,
+  required DateTime scheduledTime,
+}) async {
   const int insistentFlag = 4;
+  const notificationChannelId = 'high_importance_channel_id';
+  const notificationChannelName = 'todo background notification';
+  const AndroidNotificationChannel channel = AndroidNotificationChannel(
+    notificationChannelId,
+    notificationChannelName,
+    description: 'Channel used for background notification',
+    importance: Importance.high,
+  );
 
   await NotificationClass.flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
-      ?.createNotificationChannel(AndroidNotificationChannel(
-        title,
-        'ScheduledNotification_blah',
-        importance: Importance.defaultImportance,
-        description: 'THIS IS THE DESCRIPTION',
-      ));
+      ?.createNotificationChannel(channel);
 
   final AndroidNotificationDetails androidNotificationDetails =
       AndroidNotificationDetails(
-    title,
-    'ScheduledNotification_blah',
+    notificationChannelId,
+    notificationChannelName,
     icon: 'todo_launcher',
     importance: Importance.defaultImportance,
     priority: Priority.defaultPriority,
@@ -81,5 +85,4 @@ Future<void> scheduleNotification(
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidAllowWhileIdle: true);
-  print('SCHEDULED A NOTIFICATION ON $time');
 }

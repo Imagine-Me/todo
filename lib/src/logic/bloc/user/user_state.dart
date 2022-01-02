@@ -3,11 +3,10 @@ part of 'user_bloc.dart';
 @immutable
 abstract class UserState {
   final User? user;
-  const UserState({
-    this.user,
-  });
+  final String? firebaseToken;
+  const UserState({this.user, this.firebaseToken});
 
-  String get name => user!=null ? user!.name : '';
+  String get name => user != null ? user!.name : '';
 }
 
 class UserInitial extends UserState {
@@ -18,8 +17,10 @@ class UserInitial extends UserState {
 
 class UserLoaded extends UserState {
   final User user;
+  final String? firebaseToken;
 
-  const UserLoaded({required this.user}) : super(user: user);
+  const UserLoaded({required this.user, this.firebaseToken})
+      : super(user: user);
 }
 
 class UserNotFound extends UserState {
