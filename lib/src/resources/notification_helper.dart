@@ -68,6 +68,9 @@ Future<void> scheduleNotification(
       tz.getLocation(await FlutterNativeTimezone.getLocalTimezone()));
 
   tz.TZDateTime time;
+  if (daysBetween(DateTime.now(), scheduledTime) < 0) {
+    return;
+  }
   if (daysBetween(DateTime.now(), scheduledTime) == 0) {
     time = tz.TZDateTime.now(tz.local).add(const Duration(minutes: 5));
   } else {

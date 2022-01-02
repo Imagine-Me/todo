@@ -22,7 +22,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.1
 
 dev_dependencies:
-  bloc_test: ^9.0.1
+  bloc_test: ^9.0.2
   build_runner: ^2.1.4
   drift_dev: ^1.0.2
   flutter_lints: ^1.0.0
