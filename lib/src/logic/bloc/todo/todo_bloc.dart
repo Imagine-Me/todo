@@ -8,7 +8,9 @@ import 'package:todo/src/constants/enum.dart';
 import 'package:todo/src/database/database.dart';
 import 'package:todo/src/logic/bloc/category/category_bloc.dart';
 import 'package:todo/src/logic/model/catergory_model.dart';
+import 'package:todo/src/logic/model/notification_model.dart';
 import 'package:todo/src/logic/model/todo_model.dart';
+import 'package:todo/src/logic/repositories/notification_repository.dart';
 import 'package:todo/src/resources/notification_helper.dart';
 
 part 'todo_event.dart';
@@ -16,14 +18,17 @@ part 'todo_state.dart';
 
 class TodoBloc extends Bloc<TodoEvent, TodoState> {
   final CategoryBloc categoryBloc;
+  final String? firebaseToken;
   late final StreamSubscription categoryStream;
+  final NotificationRepository notificationRepository =
+      NotificationRepository();
 
   CategoryState _categoryState = CategoryState();
   int? _category;
 
   TodoFilter _filter = TodoFilter(null, OrderTypes.created);
 
-  TodoBloc({required this.categoryBloc})
+  TodoBloc({required this.categoryBloc, this.firebaseToken})
       : super(TodoInitial(
           categoryState: CategoryState(),
           todoFilter: TodoFilter(null, OrderTypes.created),
@@ -37,7 +42,6 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
     });
     on<AddTodo>((event, _) async {
       TodosCompanion todosCompanion = event.todosCompanion;
-
       //* CHECK IF NOTIFICATION ALREADY EXISTS
       if (todosCompanion.notification.value != null) {
         final int notificationId = todosCompanion.notification.value!;
@@ -69,6 +73,14 @@ class TodoBloc extends Bloc<TodoEvent, TodoState> {
         }
       } else {
         if (todosCompanion.remindAt.value != null) {
+          // FOR N/W FCM
+          NotificationModel notificationModel = NotificationModel(
+            notificaitonText: todosCompanion.title.value,
+            notificationTime: todosCompanion.remindAt.value.toString(),
+            firebaseToken: firebaseToken,
+          );
+          await notificationRepository.addNotification(notificationModel);
+
           final int notification = await database.addNotification(
             NotificationsCompanion(
                 todo: todosCompanion.title,

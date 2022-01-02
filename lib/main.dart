@@ -49,7 +49,8 @@ class MyApp extends StatelessWidget {
           create: (context) => _categoryBloc,
         ),
         BlocProvider<TodoBloc>(
-          create: (context) => TodoBloc(categoryBloc: _categoryBloc),
+          create: (context) => TodoBloc(
+              categoryBloc: _categoryBloc, firebaseToken: firebaseToken),
         ),
       ],
       child: MaterialApp(

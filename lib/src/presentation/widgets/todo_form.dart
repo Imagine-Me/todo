@@ -64,7 +64,7 @@ class _TodoFormState extends State<TodoForm> {
       title: drift.Value(titleTextController.text),
       remindAt: remindMeDate == null
           ? const drift.Value(null)
-          : drift.Value(remindMeDate![remindMeDate!.keys.first]),
+          : drift.Value(remindMeDate![remindMeDate!.keys.first]!.toUtc()),
       isCreatedAt: drift.Value(DateTime.now().toUtc()),
     );
 
